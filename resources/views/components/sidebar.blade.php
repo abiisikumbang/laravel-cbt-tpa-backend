@@ -8,48 +8,38 @@
         </div>
 
         <ul class="sidebar-menu">
-            {{-- <li class="menu-header">DashBoard</li> --}}
-            <li class="nav-item dropdown">
-                <a href="#"
-                    class="has-dropdown">
-                    <i class="fas fa-fire"></i>
-                    <span>Dashboard</span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li class='{{ Request::is('dashboard-general-dashboard') ? 'active' : '' }}'>
-                        <a class="nav-link"
-                            href="{{ url('home') }}">General Dashboard</a>
-                    </li>
-
-                    {{-- <li class="{{ Request::is('dashboard-ecommerce-dashboard') ? 'active' : '' }}">
-                        <a class="nav-link"
-                            href="{{ url('dashboard-ecommerce-dashboard') }}">Ecommerce Dashboard</a>
-                    </li> --}}
-                </ul>
+            <li class="{{ Request::is('home') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ url('home') }}">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            </li>
         </ul>
-
         <ul class="sidebar-menu">
-            <li class="nav-item dropdown">
-                <a href="home"
-                    class="has-dropdown">
-                    <i class="fas fa-fire"></i>
-                    <span>Users</span>
-                </a>
-                <ul class="dropdown-menu">
-                        <a class="submenu-item"
-                            href="{{ route('users.index') }}">All users</a>
-                            <ul class="dropdown-list ">
-                                    {{-- membuat dropdown pelanggan --}}
-                                <li>
-                                    <a class="nav-link"
-                                        href="#">Admin</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link"
-                                        href="#">Pelanggan</a>
-                                </li>
-                            </ul>
-                    </ul>
+            <li class="{{ Request::is('users') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('users.index') }}">
+                <i class="fas fa-users"></i>
+                <span>All Users</span>
+            </a>
+            </li>
+            {{-- <li class="{{ Request::is('users/create') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('users.create') }}">
+                <i class="fas fa-user-plus"></i>
+                <span>Add New User</span>
+            </a>
+            </li>
+            <li class="{{ Request::is('users/admin') ? 'active' : '' }}">
+            <a class="nav-link" href="{{route('users.index', ['role' => 'ADMIN'])}}">
+                <i class="fas fa-user-shield"></i>
+                <span>Admin</span>
+            </a>
+            </li>
+            <li class="{{ Request::is('users/customer') ? 'active' : '' }}">
+            <a class="nav-link" href="{{route('users.index', ['role' => 'CUSTOMER'])}}">
+                <i class="fas fa-user-tag"></i>
+                <span>Customer</span>
+            </a>
+            </li> --}}
         </ul>
     </aside>
 </div>

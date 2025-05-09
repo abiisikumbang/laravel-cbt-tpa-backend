@@ -12,10 +12,11 @@ Route::middleware(['auth']) ->group(function () {
         return view ('pages.dashboard');
     })->name('home');
 
+    Route::resource('users', UserController::class);
 });
-Route::resource('users', UserController::class);
 
 Route::get('user/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+// Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
 
 // Route::put('user/{user}', [UserController::class, 'update'])->name('users.update');
 

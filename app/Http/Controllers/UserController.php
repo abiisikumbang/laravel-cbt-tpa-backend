@@ -14,12 +14,17 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = DB::table('users')->when($request->input('name'), function ($query, $name) {
-            return $query->where('name', 'like', '%' . $name . '%');
-        })
-        ->orderBy(  'id', 'desc')
-        ->simplePaginate(5);
-    return view('pages.users.index', compact('users'));
+        $users = User::query()
+            ->when($request->input('name'), function ($query, $name) {
+                return $query->where('name', 'like', '%' . $name . '%');
+            })
+            ->when($request->input('role'), function ($query, $role) {
+                return $query->where('roles', $role);
+            })
+            ->orderBy('id', 'desc')
+            ->simplePaginate(5);
+
+        return view('pages.users.index', compact('users'));
     }
 
     public function create()
@@ -30,17 +35,13 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $data = $request->all();
-        dd('tes', $data);
         $data['password'] = Hash::make($request->password);
-
-
         User::create($data);
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
     public function edit($id){
         $user = User::findOrFail($id);
-
         return view('pages.users.edit', compact('user'));
     }
 
@@ -49,7 +50,7 @@ class UserController extends Controller
         $data = $request->validated();
         $user->update($data);
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
-        }
+    }
 
     public function destroy($id)
     {
@@ -58,14 +59,19 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User successfully deleted');
     }
 
-    //method untuk detail user
     public function show($id)
     {
-        // ambil id user
-        $user =    User::findOrFail($id);
-        // render view detail user
-
         $user = User::findOrFail($id);
+        // Assuming you want to return a JSON response
+        // You can also return a view if needed
         return view('pages.users.show', compact('user'));
+        // If you want to return a JSON response
+        // return response()->json($id);
     }
+
+    // public function show($id)
+    // {
+    //     $user = User::findOrFail($id);
+    //     return view('pages.users.show', compact('user'));
+    // }
 }

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\UserController;
 
+
 class StoreUserRequest extends FormRequest
 {
     /**
@@ -15,6 +16,8 @@ class StoreUserRequest extends FormRequest
     {
         return true;
     }
+
+
 
     // /**
     //  * Get the validation rules that apply to the request.
@@ -27,6 +30,7 @@ class StoreUserRequest extends FormRequest
             'name' => 'required|string|max:255|min:3',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required|string|min:8',
             'phone' => 'required|string|max:15',
             'roles' => 'required|string|in:STAFF,ADMIN,USER',
         ];
