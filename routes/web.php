@@ -15,7 +15,9 @@ Route::middleware(['auth']) ->group(function () {
     Route::resource('users', UserController::class);
 });
 
-Route::get('user/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+route::put('user/{user}', [UserController::class, 'edit'])->name('users.edit');
+
+// Route::get('user/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 // Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
 
 // Route::put('user/{user}', [UserController::class, 'update'])->name('users.update');

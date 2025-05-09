@@ -45,6 +45,7 @@ class UserController extends Controller
         return view('pages.users.edit', compact('user'));
     }
 
+    
     public function update(UpdateUserRequest $request, User $user)
     {
         $data = $request->validated();
@@ -62,16 +63,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-        // Assuming you want to return a JSON response
-        // You can also return a view if needed
-        return view('pages.users.show', compact('user'));
-        // If you want to return a JSON response
-        // return response()->json($id);
-    }
 
-    // public function show($id)
-    // {
-    //     $user = User::findOrFail($id);
-    //     return view('pages.users.show', compact('user'));
-    // }
+        return view('pages.users.show', compact('user'));
+    }
 }

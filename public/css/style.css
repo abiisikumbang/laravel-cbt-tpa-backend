@@ -4043,6 +4043,12 @@ body:not(.sidebar-mini)
         }
     }
 }
+
+/* modal config */
+
+.modal-backdrop {
+    display: none !important;
+}
 /* 4.5 Animation */
 .pulsate {
     -webkit-animation: pulsate 1s ease-out;

@@ -111,21 +111,21 @@
                                                                     </div>
                                                                 </div>
 
-<script>
-    function togglePassword(fieldId) {
-        const passwordField = document.getElementById(fieldId);
-        const toggleButton = passwordField.nextElementSibling.querySelector('i');
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            toggleButton.classList.remove('fa-eye');
-            toggleButton.classList.add('fa-eye-slash');
-        } else {
-            passwordField.type = 'password';
-            toggleButton.classList.remove('fa-eye-slash');
-            toggleButton.classList.add('fa-eye');
-        }
-    }
-</script>
+                                                    <script>
+                                                        function togglePassword(fieldId) {
+                                                            const passwordField = document.getElementById(fieldId);
+                                                            const toggleButton = passwordField.nextElementSibling.querySelector('i');
+                                                            if (passwordField.type === 'password') {
+                                                                passwordField.type = 'text';
+                                                                toggleButton.classList.remove('fa-eye');
+                                                                toggleButton.classList.add('fa-eye-slash');
+                                                            } else {
+                                                                passwordField.type = 'password';
+                                                                toggleButton.classList.remove('fa-eye-slash');
+                                                                toggleButton.classList.add('fa-eye');
+                                                            }
+                                                        }
+                                                    </script>
                                                                 <div class="form-group">
                                                                     <label>Phone</label>
                                                                     <div class="input-group">
