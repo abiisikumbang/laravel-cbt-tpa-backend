@@ -4,10 +4,8 @@
 
 @push('style')
     <!-- CSS Libraries -->
-    <link rel="stylesheet"
-        href="{{ asset('library/jqvmap/dist/jqvmap.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('library/summernote/dist/summernote-bs4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/jqvmap/dist/jqvmap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/summernote/dist/summernote-bs4.min.css') }}">
 @endpush
 
 @section('main')
@@ -16,7 +14,16 @@
             {{-- <div class="section-header">
                 <h1>BangJaki</h1>
             </div> --}}
-            <div class="row">
+            <div class="section-header">
+                <div class="vertical">
+                    <h1>Dashboard</h1>
+                    <div class="section-header-breadcrumb">
+                        <div class="breadcrumb-item active"><a href="home">Dashboard</a></div>
+                        <div class="breadcrumb-item"><a href="users">All Users</a></div>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-9 col-12">
                     <div class="card card-statistic-1">
                         <div class="card-icon bg-primary">
@@ -76,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="row">
                 <div class="col-lg-8 col-md-10 col-12 col-sm-14">
                     <div class="card">
@@ -84,26 +91,14 @@
                             <h4>Statistics</h4>
                             <div class="card-header-action">
                                 <div class="btn-group">
-                                    <a href="#"
-                                        class="btn btn-primary">Today</a>
-                                    <a href="#"
-                                        class="btn">Week</a>
-                                    <a href="#"
-                                        class="btn">Month</a>
+                                    <a href="#" class="btn btn-primary">Today</a>
+                                    <a href="#" class="btn">Week</a>
+                                    <a href="#" class="btn">Month</a>
                                 </div>
                             </div>
-                            {{-- <div class="card-header-action">
-                                <div class="btn-group">
-                                    <a href="#"
-                                        class="btn btn-primary">Week</a>
-                                    <a href="#"
-                                        class="btn">Month</a>
-                                </div>
-                            </div> --}}
                         </div>
                         <div class="card-body">
-                            <canvas id="myChart"
-                                height="182"></canvas>
+                            <canvas id="myChart" height="182"></canvas>
                             <div class="statistic-details mt-sm-4">
                                 <div class="statistic-details-item">
                                     <span class="text-muted"><span class="text-primary"><i
@@ -133,7 +128,7 @@
                         </div>
                     </div>
                 </div>
-            <div class="col-lg-4 col-md-12 col-12 col-sm-12">
+                <div class="col-lg-4 col-md-12 col-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
                             <h4>Recent Activities</h4>
@@ -141,10 +136,8 @@
                         <div class="card-body">
                             <ul class="list-unstyled list-unstyled-border">
                                 <li class="media">
-                                    <img class="rounded-circle mr-3"
-                                        width="50"
-                                        src="{{ asset('img/avatar/avatar-1.png') }}"
-                                        alt="avatar">
+                                    <img class="rounded-circle mr-3" width="50"
+                                        src="{{ asset('img/avatar/avatar-1.png') }}" alt="avatar">
                                     <div class="media-body">
                                         <div class="text-primary float-right">Now</div>
                                         <div class="media-title">Haikal</div>
@@ -153,10 +146,8 @@
                                     </div>
                                 </li>
                                 <li class="media">
-                                    <img class="rounded-circle mr-3"
-                                        width="50"
-                                        src="{{ asset('img/avatar/avatar-2.png') }}"
-                                        alt="avatar">
+                                    <img class="rounded-circle mr-3" width="50"
+                                        src="{{ asset('img/avatar/avatar-2.png') }}" alt="avatar">
                                     <div class="media-body">
                                         <div class="float-right">12m</div>
                                         <div class="media-title">joe</div>
@@ -164,10 +155,8 @@
                                     </div>
                                 </li>
                                 <li class="media">
-                                    <img class="rounded-circle mr-3"
-                                        width="50"
-                                        src="{{ asset('img/avatar/avatar-3.png') }}"
-                                        alt="avatar">
+                                    <img class="rounded-circle mr-3" width="50"
+                                        src="{{ asset('img/avatar/avatar-3.png') }}" alt="avatar">
                                     <div class="media-body">
                                         <div class="float-right">17m</div>
                                         <div class="media-title">Indra</div>
@@ -175,10 +164,8 @@
                                     </div>
                                 </li>
                                 <li class="media">
-                                    <img class="rounded-circle mr-3"
-                                        width="50"
-                                        src="{{ asset('img/avatar/avatar-4.png') }}"
-                                        alt="avatar">
+                                    <img class="rounded-circle mr-3" width="50"
+                                        src="{{ asset('img/avatar/avatar-4.png') }}" alt="avatar">
                                     <div class="media-body">
                                         <div class="float-right">21m</div>
                                         <div class="media-title">hafiz</div>
@@ -187,8 +174,7 @@
                                 </li>
                             </ul>
                             <div class="pt-1 pb-1 text-center">
-                                <a href="#"
-                                    class="btn btn-primary btn-lg btn-round">
+                                <a href="#" class="btn btn-primary btn-lg btn-round">
                                     View All
                                 </a>
                             </div>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('title', 'Edit User')
 
@@ -31,11 +31,75 @@
             </div>
 
             <div class="section-body">
-                <h2 class="section-title">Users</h2>
+                <h2 class="section-title">Users</h2> --}}
 
 
+                <!-- Edit User Modal -->
+                {{-- <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog"
+                    aria-labelledby="editUserModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <form id="editUserForm" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit User</h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
 
-                <div class="card">
+                                <div class="modal-body">
+                                    <input type="hidden" id="editUserId">
+
+
+                                    <div class="form-group">
+                                        <label for="editName">Name</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="name" id="editName" value="{{ $user->name }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="editEmail">Email</label>
+                                        <input type="email" class="form-control" name="email" id="editEmail" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="editPhone">Phone</label>
+                                        <input type="numeric" class="form-control" name="phone" id="editPhone" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Roles</label>
+                                        <div class="selectgroup w-100" id="editRolesGroup">
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="roles" value="ADMIN"
+                                                    class="selectgroup-input" id="editRoleAdmin">
+                                                <span class="selectgroup-button">Admin</span>
+                                            </label>
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="roles" value="STAFF"
+                                                    class="selectgroup-input" id="editRoleStaff">
+                                                <span class="selectgroup-button">Staff</span>
+                                            </label>
+                                            <label class="selectgroup-item">
+                                                <input type="radio" name="roles" value="USER"
+                                                    class="selectgroup-input" id="editRoleUser">
+                                                <span class="selectgroup-button">User</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-warning ">Update</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div> --}}
+                {{-- <div class="card">
                     <form action="{{ route('users.update', $user) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -127,4 +191,4 @@
 @endsection
 
 @push('scripts')
-@endpush
+@endpush --}}

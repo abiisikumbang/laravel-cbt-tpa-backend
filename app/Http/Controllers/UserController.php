@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Log;
 
 
 class UserController extends Controller
@@ -36,7 +37,13 @@ class UserController extends Controller
     {
         $data = $request->all();
         $data['password'] = Hash::make($request->password);
-        User::create($data);
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' =>$data['password'],
+            'phone' => $data['phone'],
+            'roles' => $data['roles'],
+        ]);
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
@@ -45,13 +52,31 @@ class UserController extends Controller
         return view('pages.users.edit', compact('user'));
     }
 
-    
-    public function update(UpdateUserRequest $request, User $user)
-    {
+    public function update(UpdateUserRequest $request, User $user){
         $data = $request->validated();
         $user->update($data);
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
-    }
+
+    // // Verifikasi password sekarang
+    // if (!Hash::check($request->password, $user->password)) {
+    //     return back()->withErrors(['password' => 'Password yang dimasukkan salah. Perubahan tidak disimpan.'])->withInput();
+    // }
+
+    // // Hapus password dari array agar tidak ikut di-update
+    // unset($data['password']);
+
+    // // Update user
+    // $user->update($data);
+
+    // return redirect()->route('users.index')->with('success', 'User updated successfully.');
+}
+
+    // public function update(UpdateUserRequest $request, User $user)
+    // {
+    //     $data = $request->validated();
+    //     $user->update($data);
+    //     return redirect()->route('users.index')->with('success', 'User updated successfully.');
+    // }
 
     public function destroy($id)
     {

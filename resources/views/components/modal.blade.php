@@ -1,4 +1,4 @@
-<div class="modal fade hello" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModal" aria-hidden="true">
+{{-- <div class="modal fade hello" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -23,4 +23,4 @@
         </div>
     </div>
 </div>
-</div>
+</div> --}}
