@@ -1,7 +1,7 @@
 <div class="main-sidebar sidebar-style-3">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <img alt="image" src="{{ asset('img/stisla-fill.png') }}" class="square" width="80" height="60">
+            <img alt="image" src="{{ asset('img/stisla-fill.png') }}" class="square" width="90" height="60">
             <a href="home"></a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm ml-2">

@@ -10,85 +10,122 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Log;
 
-
+// Class untuk mengatur user
 class UserController extends Controller
 {
+    // Method untuk menampilkan halaman index users
     public function index(Request $request)
     {
+        // Menampilkan semua user
         $users = User::query()
+
+            // Filter berdasarkan nama
             ->when($request->input('name'), function ($query, $name) {
+                // Mencari nama yang sesuai dengan nama yang diinput
                 return $query->where('name', 'like', '%' . $name . '%');
             })
+
+            // Filter berdasarkan role
             ->when($request->input('role'), function ($query, $role) {
+                // Mencari role yang sesuai dengan role yang diinput
                 return $query->where('roles', $role);
             })
+
+            // Menampilkan dalam order id DESC
             ->orderBy('id', 'desc')
+
+            // Menampilkan dalam bentuk pagination
             ->simplePaginate(5);
 
+        // Menampilkan view users.index dan memberikan data users
         return view('pages.users.index', compact('users'));
     }
 
+    // Method untuk menampilkan halaman create user
     public function create()
     {
+        // Menampilkan view users.create
         return view('pages.users.create');
     }
 
+    // Method untuk menginput data user
     public function store(StoreUserRequest $request)
     {
+        // Mendapatkan data yang diinput
         $data = $request->all();
+
+        // Membuat password dengan menggunakan Hash
         $data['password'] = Hash::make($request->password);
+
+        // Menyimpan data user
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' =>$data['password'],
+            'password' => $data['password'],
             'phone' => $data['phone'],
             'roles' => $data['roles'],
         ]);
+
+        // Redirect ke halaman index user
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
-    public function edit($id){
+    // Method untuk mengedit data user
+    public function edit($id)
+    {
+        // Mendapatkan data user berdasarkan id
         $user = User::findOrFail($id);
+
+        if(request()->ajax()) {
+            return response()->json($user);
+        }
+
+        // Menampilkan view users.edit dan memberikan data user
         return view('pages.users.edit', compact('user'));
     }
 
-    public function update(UpdateUserRequest $request, User $user){
+    // Method untuk mengupdate data user
+    public function update(UpdateUserRequest $request, User $user)
+    {
+        // Mendapatkan data yang diinput
         $data = $request->validated();
+
+        // Verifikasi password sekarang
+        // if (!Hash::check($request->password, $user->password)) {
+        //     return back()->withErrors(['password' => 'Password yang dimasukkan salah. Perubahan tidak disimpan.'])->withInput();
+        // }
+
+        // Hapus password dari array agar tidak ikut di-update
+        unset($data['password']);
+
+        // Update user
         $user->update($data);
+
+        // Redirect ke halaman index user
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
+    }
 
-    // // Verifikasi password sekarang
-    // if (!Hash::check($request->password, $user->password)) {
-    //     return back()->withErrors(['password' => 'Password yang dimasukkan salah. Perubahan tidak disimpan.'])->withInput();
-    // }
-
-    // // Hapus password dari array agar tidak ikut di-update
-    // unset($data['password']);
-
-    // // Update user
-    // $user->update($data);
-
-    // return redirect()->route('users.index')->with('success', 'User updated successfully.');
-}
-
-    // public function update(UpdateUserRequest $request, User $user)
-    // {
-    //     $data = $request->validated();
-    //     $user->update($data);
-    //     return redirect()->route('users.index')->with('success', 'User updated successfully.');
-    // }
-
+    // Method untuk menghapus data user
     public function destroy($id)
     {
+        // Mendapatkan data user berdasarkan id
         $user = User::findOrFail($id);
+
+        // Menghapus data user
         $user->delete();
+
+        // Redirect ke halaman index user
         return redirect()->route('users.index')->with('success', 'User successfully deleted');
     }
 
+    // Method untuk menampilkan detail user
     public function show($id)
     {
+        // Mendapatkan data user berdasarkan id
         $user = User::findOrFail($id);
 
+        // Menampilkan view users.show dan memberikan data user
         return view('pages.users.show', compact('user'));
     }
 }
+

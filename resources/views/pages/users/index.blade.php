@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
 @endpush
 
+@section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@endsection
+
 @section('main')
     <div class="main-content ">
         <section class="section">
@@ -71,13 +75,6 @@
                     </div>
                 </div>
             </div>
-            {{-- <div class="section-header">
-                <h1>List User</h1>
-                <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="home">Dashboard</a></div>
-                    <div class="breadcrumb-item"><a href="users">All Users</a></div>
-                </div>
-            </div> --}}
             <div class="section-body">
                 <div class="row">
                     <div class="col-12">
@@ -90,6 +87,7 @@
                             <div class="d-flex align-items-center mb-3 ml-4 mt-3 mr-4">
                                 <div class="section-header-button">
                                     <div class="card-body">
+
                                         {{-- tombol add user --}}
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                             data-target="#exampleModal"><i class="fas fa-plus"></i>
@@ -303,7 +301,7 @@
                                             <td>
                                                 <div class="d-flex justify-content-center">
                                                     {{-- EDIT --}}
-                                                    <button class="btn btn-sm btn-info"
+                                                    <button class="btn btn-sm btn-info" data-id="{{ $user->id }}"
                                                         onclick='showEditModal(@json($user))'>
                                                         <i class="fas fa-edit"></i>Edit
                                                     </button>
@@ -358,49 +356,55 @@
                                                     <div class="form-group">
                                                         <label for="editName">Name</label>
                                                         <input type="text" class="form-control" name="name"
-                                                            id="editName" value="{{ $user->name }}" required>
+                                                            value="{{ $user->name }}" id="editName" required>
                                                     </div>
                                                     {{-- email --}}
                                                     <div class="form-group">
                                                         <label for="editEmail">Email</label>
                                                         <input type="email" class="form-control" name="email"
-                                                            id="editEmail" value="{{ $user->email }}" required>
+                                                            value="{{ $user->name }}" id="editEmail" required>
                                                     </div>
                                                     {{-- phone --}}
                                                     <div class="form-group">
                                                         <label for="editPhone">Phone</label>
                                                         <input type="numeric" class="form-control" name="phone"
-                                                            id="editPhone" value="{{ $user->phone }}" required>
+                                                            value="{{ $user->name }}" id="editPhone" required>
                                                     </div>
+                                                    {{-- password --}}
+                                                    {{-- <div class="form-group">
+                                                        <label for="password">Masukkan Password Anda</label>
+                                                        <input type="password" class="form-control" name="password"
+                                                            id="password" required>
+                                                    </div> --}}
                                                     {{-- roles --}}
                                                     <div class="form-group">
                                                         <label class="form-label">Roles</label>
                                                         <div class="selectgroup w-100" id="editRolesGroup">
-
                                                             <label class="selectgroup-item">
                                                                 <input type="radio" name="roles" value="ADMIN"
-                                                                    class="selectgroup-input" id="editRoleAdmin"
-                                                                    @if ($user->roles == 'ADMIN') checked @endif>
-                                                                <span class="selectgroup-button">Admin</span>
+                                                                    class="selectgroup-input" id="editRoleAdmin">
+                                                                {{-- @if ($user->roles == 'ADMIN') checked @endif> --}} <span
+                                                                    class="selectgroup-button">Admin</span>
                                                             </label>
 
                                                             <label class="selectgroup-item">
                                                                 <input type="radio" name="roles" value="STAFF"
-                                                                    class="selectgroup-input" id="editRoleStaff"
-                                                                    @if ($user->roles == 'STAFF') checked @endif>
+                                                                    class="selectgroup-input" id="editRoleStaff">
+                                                                {{-- @if ($user->roles == 'STAFF') checked @endif> --}}
                                                                 <span class="selectgroup-button">Staff</span>
                                                             </label>
                                                             <label class="selectgroup-item">
                                                                 <input type="radio" name="roles" value="USER"
-                                                                    class="selectgroup-input" id="editRoleUser"
-                                                                    @if ($user->roles == 'USER') checked @endif>
+                                                                    class="selectgroup-input" id="editRoleUser">
+                                                                {{-- @if ($user->roles == 'USER') checked @endif> --}}
                                                                 <span class="selectgroup-button">User</span>
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-warning ">Update</button>
+                                                    <button type="submit" class="btn btn-warning "
+                                                        onclick="console.log('Clicked!')">Update</button>
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Cancel</button>
                                                 </div>
@@ -450,6 +454,8 @@
     </div>
 @endsection
 
+
+
 @push('scripts')
     <!-- JS Libraies -->
     <script src="{{ asset('library/selectric/public/jquery.selectric.min.js') }}"></script>
@@ -497,12 +503,6 @@
         }
     </script>
 
-    {{-- <script>
-        function showCreateModal() {
-            document.getElementById('exampleModal').reset();
-            $('#exampleModal').modal('show');
-        }
-    </script> --}}
 
 
     <!-- JS Libraies -->
@@ -516,5 +516,63 @@
     <script src="{{ asset('library/selectric/public/jquery.selectric.min.js') }}"></script>
 
     <!-- Page Specific JS File -->
-    <script src="{{ asset('js/page/forms-advanced-forms.js') }}"></script>
+    {{-- <script src="{{ asset('js/page/forms-advanced-forms.js') }}"></script> --}}
 @endpush
+
+{{-- <script>
+        $(document).ready(function() {
+            $('.btn-edit-user').on('click', function() {
+                const userId = $(this).data('id');
+
+                $.get(`/users/${userId}/edit`, function(data) {
+                    // Set nilai form
+                    $('#editUserId').val(data.id);
+                    $('#editName').val(data.name);
+                    $('#editEmail').val(data.email);
+                    $('#editPhone').val(data.phone);
+                    $('#password').val('');
+
+                    // Roles
+                    $(`#editRolesGroup input[value="${data.roles}"]`).prop('checked', true);
+
+                    // Update form action
+                    $('#editUserForm').attr('action', `/users/${userId}`);
+
+                    // Tampilkan modal
+                    $('#editUserModal').modal('show');
+                });
+            });
+
+            // AJAX submit form
+            $('#editUserForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const url = form.attr('action');
+                const formData = form.serialize();
+
+                $.ajax({
+                    url: url,
+                    type:
+                    'POST',
+                    headers:{'X-HTTP-Method-Override':'PUT'},
+                    data: formData,
+                    success: function(response) {
+                        $('#editUserModal').modal('hide');
+                        alert('User updated successfully.');
+                        location.reload(); // atau update row di table tanpa reload
+                    },
+                    error: function(xhr) {
+                        const res = xhr.responseJSON;
+                        let msg = 'Update gagal.';
+                        if (res && res.errors) {
+                            msg = Object.values(res.errors).join('\n');
+                        } else if (res && res.message) {
+                            msg = res.message;
+                        }
+                        alert(msg);
+                    }
+                });
+            });
+        });
+    </script> --}}
