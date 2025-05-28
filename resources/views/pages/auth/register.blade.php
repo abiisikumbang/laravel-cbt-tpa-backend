@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Register CBT')
+@section('title', 'Register')
 
 @push('style')
     <!-- CSS Libraries -->
@@ -17,12 +17,12 @@
             <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="frist_name">Name</label>
-                    <input id="frist_name" type="text"
+                    <label for="name">Name</label>
+                    <input id="name" type="text"
                         class="form-control @error('name')
                         is-invalid
                     @enderror"
-                        name="name" autofocus>
+                        name="name" autofocus placeholder="Masukkan nama Anda">
                     @error('name')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -30,15 +30,14 @@
                     @enderror
                 </div>
 
-
-
+                {{-- email --}}
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input id="email" type="email"
                         class="form-control @error('email')
                         is-invalid
                     @enderror"
-                        name="email">
+                        name="email" autofocus placeholder="Masukkan email Anda">
                     @error('email')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -46,15 +45,23 @@
                     @enderror
                 </div>
 
-
+                {{-- password --}}
                 <div class="form-group">
                     <label for="password" class="d-block">Password</label>
-                    <input id="password" type="password"
-                        class="form-control pwstrength @error('password')
-                        is-invalid
+                    <div class="input-group">
+                        <input id="password" type="password"
+                            class="form-control pwstrength @error('password')
+                            is-invalid
 
-                    @enderror"
-                        data-indicator="pwindicator" name="password">
+                        @enderror"
+                            data-indicator="pwindicator" name="password" autofocus placeholder="Masukkan password Anda">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-secondary"
+                                onclick="togglePasswordVisibility('password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
                     @error('password')
                         <div class="invalid-feedback">
                             {{ $message }}
@@ -65,19 +72,43 @@
                         <div class="label"></div>
                     </div>
                 </div>
+
+                {{-- password confirmation --}}
                 <div class="form-group ">
                     <label for="password2" class="d-block">Password Confirmation</label>
-                    <input id="password2" type="password"
-                        class="form-control @error('password_confirmation')
-                        is-invalid
-                    @enderror"
-                        name="password_confirmation">
+                    <div class="input-group">
+                        <input id="password2" type="password"
+                            class="form-control @error('password_confirmation')
+                            is-invalid
+                        @enderror"
+                            name="password_confirmation" autofocus placeholder="Konfirmasi password Anda">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-secondary"
+                                onclick="togglePasswordVisibility('password2')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 @error('password_confirmation')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
                 @enderror
+
+                {{-- toggle password visibility --}}
+                <script>
+                    /**
+                     * Toggle password visibility
+                     * @param {string} id - id of the input field
+                     */
+                    function togglePasswordVisibility(id) {
+                        var passwordField = document.getElementById(id);
+                        var passwordFieldType = passwordField.getAttribute('type');
+                        passwordField.setAttribute('type', passwordFieldType === 'password' ? 'text' : 'password');
+                        event.target.innerText = passwordFieldType === 'password' ? 'Hide' : 'Show';
+                    }
+                </script>
 
 
 

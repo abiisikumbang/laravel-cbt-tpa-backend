@@ -41,6 +41,7 @@ class AuthController extends Controller
         $token = $user->createToken('flutter_token')->plainTextToken;
        // Kembalikan respon dengan token dan data user
        return response()->json([
+           'message' => 'Login successfully',
            'access_token' => $token,
            'token_type' => 'Bearer',
            'user' => $user
@@ -65,6 +66,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'roles' => 'USER',
 
         ]);
 
@@ -73,10 +75,30 @@ class AuthController extends Controller
 
         // Kembalikan respon dengan token dan data user
         return response()->json([
+            'message' => 'User created successfully',
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user
         ],201);
+    }
+
+    /**
+     * Fungsi logout
+     *
+     * Fungsi ini digunakan untuk melakukan proses logout
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        // Hapus token yang digunakan untuk autentikasi
+        $request->user()->currentAccessToken()->delete();
+
+        // Kembalikan respon sukses
+        return response()->json([
+            'message' => 'Logged out successfully'
+        ], 200);
     }
 }
 

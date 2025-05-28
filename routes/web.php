@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use iluminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use Illuminate\Http\Request;
 
 /**
  * Menampilkan halaman login jika user belum login
@@ -12,20 +14,23 @@ Route::get('/', function () {
     return view('pages.auth.login');
 });
 
-/**
+/**FR
  * Menampilkan halaman dashboard jika user sudah login
  */
-Route::middleware(['auth']) ->group(function () {
 
-    Route::get('home', function () {
-        return view ('pages.dashboard');
-    })->name('home');
+Route::resource('home', DashboardController::class)->middleware('auth');
+
+
+// Route::middleware(['auth']) ->group(function () {
+//     Route::get('home', function () {
+//         return view ('pages.dashboard');
+//     })->name('home');
+// });
 
     /**
      * Menampilkan halaman create user
      */
-    Route::resource('users', UserController::class);
-});
+Route::resource('users', UserController::class)->middleware('auth');
 
 /**
  * Membuat route untuk submit create user
@@ -77,3 +82,11 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.changePassword');
 });
 
+// Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
+//     $request->user()->currentAccessToken()->delete();
+//     return response()->json(['message' => 'Logged out']);
+// });
+Route::get('/logout', function () {
+    Auth::logout();
+    return redirect('/');
+})->name('logout')->middleware('auth');

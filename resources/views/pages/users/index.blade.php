@@ -17,49 +17,48 @@
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-9 col-12">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-primary">
-                            <i class="fa-solid fa-users"></i>
+                        <div class="card-icon bg-success">
+                            <i class="far fa-user"></i>
                         </div>
                         <div class="card-wrap">
                             <div class="card-header">
                                 <h4 class="font-weight-bolder">Total Admin</h4>
                             </div>
-                            <div class="card-body">10
+                            <div class="card-body">{{ $totalAdmin }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-9 col-12">
+                    <div class="card card-statistic-1">
+                        <div class="card-icon bg-info">
+                            <i class="fas fa-circle-user"></i>
+                        </div>
+                        <div class="card-wrap">
+                            <div class="card-header">
+                                <h4>Total Staff</h4>
+                            </div>
+                            <div class="card-body">
+                                {{ $totalStaff }}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-9 col-12">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-danger">
-                            <i class="far fa-newspaper"></i>
+                        <div class="card-icon bg-secondary">
+                            <i class="fas fa-users"></i>
                         </div>
                         <div class="card-wrap">
                             <div class="card-header">
-                                <h4>News</h4>
+                                <h4>Total Users</h4>
                             </div>
                             <div class="card-body">
-                                42
+                                {{ $totalUser }}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-9 col-12">
-                    <div class="card card-statistic-1">
-                        <div class="card-icon bg-warning">
-                            <i class="far fa-file"></i>
-                        </div>
-                        <div class="card-wrap">
-                            <div class="card-header">
-                                <h4>Reports</h4>
-                            </div>
-                            <div class="card-body">
-                                1,201
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-9 col-12">
+                {{-- <div class="col-lg-3 col-md-6 col-sm-9 col-12">
                     <div class="card card-statistic-1">
                         <div class="card-icon bg-success">
                             <i class="fas fa-circle"></i>
@@ -73,7 +72,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <div class="section-body">
                 <div class="row">
@@ -284,27 +283,41 @@
                             <div class="table-responsive">
                                 <table class="table-striped table">
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Created At</th>
-                                        <th>Roles</th>
-                                        <th>Action</th>
+                                        <th class="text-center">No</th>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Email</th>
+                                        <th class="text-center">Phone</th>
+                                        <th class="text-center">Created At</th>
+                                        <th class="text-center">Roles</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                     @foreach ($users as $user)
                                         <tr>
+                                            <td class="text-center">
+                                                {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
+                                            </td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->phone }}</td>
                                             <td>{{ $user->created_at }}</td>
-                                            <td>{{ $user->roles }} </td>
                                             <td>
-                                                <div class="d-flex justify-content-center">
+                                                @if ($user->roles === 'ADMIN')
+                                                    <span class="badge bg-success">{{ $user->roles }}</span>
+                                                @elseif ($user->roles === 'STAFF')
+                                                    <span class="badge bg-info">{{ $user->roles }}</span>
+                                                @elseif ($user->roles === 'USER')
+                                                    <span class="badge bg-secondary">{{ $user->roles }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-1">
                                                     {{-- EDIT --}}
-                                                    <button class="btn btn-sm btn-info" data-id="{{ $user->id }}"
-                                                        onclick='showEditModal(@json($user))'>
-                                                        <i class="fas fa-edit"></i>Edit
-                                                    </button>
+                                                    @can('update', $user)
+                                                        <button class="btn btn-sm btn-info" data-id="{{ $user->id }}"
+                                                            onclick='showEditModal(@json($user))'>
+                                                            <i class="fas fa-edit"></i>Edit
+                                                        </button>
+                                                    @endcan
 
                                                     {{-- DELETE --}}
                                                     <form action="{{ route('users.destroy', $user->id) }}" method="POST"
@@ -312,10 +325,12 @@
                                                         <input type="hidden" name="_method" value="DELETE" />
                                                         <input type="hidden" name="_token"
                                                             value="{{ csrf_token() }}" />
-                                                        <button class="btn btn-sm btn-danger btn-icon confirm-delete"
-                                                            onclick="return confirm('Are you sure you want to delete this user?')">
-                                                            <i class="fas fa-trash"></i> Delete
-                                                        </button>
+                                                        @can('delete', $user)
+                                                            <button class="btn btn-sm btn-danger btn-icon confirm-delete"
+                                                                onclick="return confirm('Are you sure you want to delete this user?')">
+                                                                <i class="fas fa-trash"></i> Delete
+                                                            </button>
+                                                        @endcan
                                                     </form>
                                                     {{-- DETAIL --}}
                                                     <button href='{{ route('users.show', $user->id) }}'
@@ -370,13 +385,6 @@
                                                         <input type="numeric" class="form-control" name="phone"
                                                             value="{{ $user->name }}" id="editPhone" required>
                                                     </div>
-                                                    {{-- password --}}
-                                                    {{-- <div class="form-group">
-                                                        <label for="password">Masukkan Password Anda</label>
-                                                        <input type="password" class="form-control" name="password"
-                                                            id="password" required>
-                                                    </div> --}}
-                                                    {{-- roles --}}
                                                     <div class="form-group">
                                                         <label class="form-label">Roles</label>
                                                         <div class="selectgroup w-100" id="editRolesGroup">
@@ -422,8 +430,8 @@
                                                 <h5 class="modal-title" id="userDetailModal">
                                                     Detail User
                                                 </h5>
-                                                <button type="button" class="btn-close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button title="View user detail" type="button" class="btn-close"
+                                                    data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -518,61 +526,3 @@
     <!-- Page Specific JS File -->
     {{-- <script src="{{ asset('js/page/forms-advanced-forms.js') }}"></script> --}}
 @endpush
-
-{{-- <script>
-        $(document).ready(function() {
-            $('.btn-edit-user').on('click', function() {
-                const userId = $(this).data('id');
-
-                $.get(`/users/${userId}/edit`, function(data) {
-                    // Set nilai form
-                    $('#editUserId').val(data.id);
-                    $('#editName').val(data.name);
-                    $('#editEmail').val(data.email);
-                    $('#editPhone').val(data.phone);
-                    $('#password').val('');
-
-                    // Roles
-                    $(`#editRolesGroup input[value="${data.roles}"]`).prop('checked', true);
-
-                    // Update form action
-                    $('#editUserForm').attr('action', `/users/${userId}`);
-
-                    // Tampilkan modal
-                    $('#editUserModal').modal('show');
-                });
-            });
-
-            // AJAX submit form
-            $('#editUserForm').on('submit', function(e) {
-                e.preventDefault();
-
-                const form = $(this);
-                const url = form.attr('action');
-                const formData = form.serialize();
-
-                $.ajax({
-                    url: url,
-                    type:
-                    'POST',
-                    headers:{'X-HTTP-Method-Override':'PUT'},
-                    data: formData,
-                    success: function(response) {
-                        $('#editUserModal').modal('hide');
-                        alert('User updated successfully.');
-                        location.reload(); // atau update row di table tanpa reload
-                    },
-                    error: function(xhr) {
-                        const res = xhr.responseJSON;
-                        let msg = 'Update gagal.';
-                        if (res && res.errors) {
-                            msg = Object.values(res.errors).join('\n');
-                        } else if (res && res.message) {
-                            msg = res.message;
-                        }
-                        alert(msg);
-                    }
-                });
-            });
-        });
-    </script> --}}

@@ -71,18 +71,44 @@
 
                                     <div class="form-group">
                                         <label>Password Saat Ini</label>
-                                        <input type="password" name="current_password" class="form-control" required>
+                                        <div class="input-group">
+                                            <input type="password" name="current_password" class="form-control" required
+                                                id="current_password">
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="togglePasswordVisibility('current_password', this)">
+                                                    <i class="fas fa-eye" id="current_password_eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Password Baru</label>
-                                        <input type="password" name="new_password" class="form-control" required>
+                                        <div class="input-group">
+                                            <input type="password" name="new_password" class="form-control" required
+                                                id="new_password">
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="togglePasswordVisibility('new_password', this)">
+                                                    <i class="fas fa-eye" id="new_password_eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Konfirmasi Password Baru</label>
-                                        <input type="password" name="new_password_confirmation" class="form-control"
-                                            required>
+                                        <div class="input-group">
+                                            <input type="password" name="new_password_confirmation" class="form-control"
+                                                required id="new_password_confirmation">
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="togglePasswordVisibility('new_password_confirmation', this)">
+                                                    <i class="fas fa-eye" id="new_password_confirmation_eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <button type="submit" class="btn btn-warning mt-2">Ganti Password</button>
@@ -90,6 +116,22 @@
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        function togglePasswordVisibility(id, button) {
+                            const passwordField = document.getElementById(id);
+                            const passwordEye = button.querySelector('i');
+                            if (passwordField.type === 'password') {
+                                passwordField.type = 'text';
+                                passwordEye.classList.remove('fa-eye');
+                                passwordEye.classList.add('fa-eye-slash');
+                            } else {
+                                passwordField.type = 'password';
+                                passwordEye.classList.remove('fa-eye-slash');
+                                passwordEye.classList.add('fa-eye');
+                            }
+                        }
+                    </script>
                 </div>
             </div>
         </section>

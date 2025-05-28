@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                        name="email" value="{{ old('email') }}" required autofocus>
+                        name="email" value="{{ old('email') }}" required autofocus placeholder="Masukkan email Anda">
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -24,7 +24,7 @@
                     <label for="password">Password</label>
                     <div class="input-group">
                         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                            name="password" required>
+                            name="password" required autofocus placeholder="Masukkan password Anda">
                         <div class="input-group-append">
                             <button type="button" class="btn btn-outline-secondary"
                                 onclick="togglePasswordVisibility()">Show</button>

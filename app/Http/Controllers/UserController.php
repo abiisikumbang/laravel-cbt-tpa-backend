@@ -9,13 +9,23 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+
+
+
 
 // Class untuk mengatur user
 class UserController extends Controller
 {
+
     // Method untuk menampilkan halaman index users
     public function index(Request $request)
     {
+        $totalAdmin = User::where('roles', 'ADMIN')->count();
+        $totalStaff = User::where('roles', 'STAFF')->count();
+        $totalUser = User::where('roles', 'USER')->count();
+
         // Menampilkan semua user
         $users = User::query()
 
@@ -38,7 +48,7 @@ class UserController extends Controller
             ->simplePaginate(5);
 
         // Menampilkan view users.index dan memberikan data users
-        return view('pages.users.index', compact('users'));
+        return view('pages.users.index', compact('users', 'totalAdmin', 'totalUser', 'totalStaff'));
     }
 
     // Method untuk menampilkan halaman create user
@@ -70,6 +80,7 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
+
     // Method untuk mengedit data user
     public function edit($id)
     {
@@ -90,10 +101,6 @@ class UserController extends Controller
         // Mendapatkan data yang diinput
         $data = $request->validated();
 
-        // Verifikasi password sekarang
-        // if (!Hash::check($request->password, $user->password)) {
-        //     return back()->withErrors(['password' => 'Password yang dimasukkan salah. Perubahan tidak disimpan.'])->withInput();
-        // }
 
         // Hapus password dari array agar tidak ikut di-update
         unset($data['password']);
@@ -126,6 +133,15 @@ class UserController extends Controller
 
         // Menampilkan view users.show dan memberikan data user
         return view('pages.users.show', compact('user'));
+    }
+
+    // Method untuk Logout
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
     }
 }
 
