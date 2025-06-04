@@ -25,6 +25,7 @@ class UserController extends Controller
         $totalAdmin = User::where('roles', 'ADMIN')->count();
         $totalStaff = User::where('roles', 'STAFF')->count();
         $totalUser = User::where('roles', 'USER')->count();
+        $usersTodayData = User::whereDate('created_at', now())->count();
 
         // Menampilkan semua user
         $users = User::query()

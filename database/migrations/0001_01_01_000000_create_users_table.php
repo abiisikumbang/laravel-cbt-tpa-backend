@@ -13,32 +13,43 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->string('name'); // nama user
+            $table->string('email')->unique(); // email user
+            $table->timestamp('email_verified_at')->nullable(); // timestamp ketika email user diverifikasi
+            $table->string('password'); // password user
+            // $table->foreignId('user_id')->constrained()->onDelete('cascade'); // foreign key ke tabel users
+            $table->integer('total_points')->default(0); // total poin yang diperoleh user
+            $table->rememberToken(); // token untuk mengingat user
+            $table->timestamps(); // timestamp ketika user dibuat dan diupdate
         });
 
+        /**
+         * Membuat tabel password_reset_tokens dengan kolom:
+         * - email: email user
+         * - token: token untuk mengatur ulang password
+         * - created_at: timestamp ketika token dibuat
+         */
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
+            $table->string('email')->primary(); // email user
+            $table->string('token'); // token untuk mengatur ulang password
+            $table->timestamp('created_at')->nullable(); // timestamp ketika token dibuat
         });
 
+        /**
+
+         */
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
+            $table->string('id')->primary(); // ID unik untuk setiap session
+            $table->foreignId('user_id')->nullable()->index(); // foreign key ke tabel users
+            $table->string('ip_address', 45)->nullable(); // alamat IP user
+            $table->text('user_agent')->nullable(); // informasi tentang browser user
+            $table->longText('payload'); // data yang disimpan dalam session
+            $table->integer('last_activity')->index(); // timestamp ketika session terakhir aktif
         });
     }
 
     /**
-     * Reverse the migrations.  
+     * Menghapus tabel users, password_reset_tokens, dan sessions
      */
     public function down(): void
     {
@@ -47,3 +58,4 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
+
