@@ -14,7 +14,7 @@
 @section('main')
     <div class="main-content ">
         <section class="section">
-            <div class="row">
+           <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-9 col-12">
                     <div class="card card-statistic-1">
                         <div class="card-icon bg-success">
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </div> --}}
-            </div>
+            </div> 
             <div class="section-body">
                 <div class="row">
                     <div class="col-12">
@@ -350,7 +350,7 @@
                                 <!-- Edit User Modal -->
                                 <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog"
                                     aria-labelledby="editUserModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-dialog" role="document">
                                         <form action="{{ route('users.update', $user) }}" id="editUserForm"
                                             method="POST">
                                             @csrf

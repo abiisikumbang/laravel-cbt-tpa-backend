@@ -24,10 +24,17 @@
             <li class="{{ Request::is('users') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('users.index') }}">
                     <i class="fas fa-users"></i>
-                    <span>All Users</span>
+                    <span>Data Users</span>
                 </a>
             </li>
-
+        </ul>
+        <ul class="sidebar-menu">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('transactions.index') }}">
+                    <i class="fas fa-table"></i>
+                    <span>Tabel Transaksi</span>
+                </a>
+            </li>
         </ul>
     </aside>
 </div>

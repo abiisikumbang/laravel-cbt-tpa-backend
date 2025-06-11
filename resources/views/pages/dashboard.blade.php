@@ -13,16 +13,17 @@
         <section class="section">
 
             <div class="section-header">
+
                 <div class="vertical">
                     <h1>Dashboard</h1>
                     <div class="section-header-breadcrumb">
                         <div class="breadcrumb-item active"><a href="home">Dashboard</a></div>
-                        <div class="breadcrumb-item"><a href="users">All Users</a></div>
+                        <div class="breadcrumb-item"><a href="users">Data User</a></div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-lg-8 col-md-10 col-12 col-sm-14">
                     <div class="card">
                         <div class="card-header">
@@ -197,6 +198,7 @@
                         renderUsersChart(currentRange);
                     </script>
                 @endpush
+            </div> --}}
         </section>
     </div>
 @endsection

@@ -44,6 +44,7 @@
 <body>
     <div id="app">
         <div class="main-wrapper">
+            {{-- {{ $slot }} --}}
             <!-- Header -->
             @include('components.header')
 
@@ -75,3 +76,4 @@
 </body>
 
 </html>
+

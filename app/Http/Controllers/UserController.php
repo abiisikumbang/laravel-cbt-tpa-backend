@@ -144,5 +144,12 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         return redirect('/login');
     }
+
+    public function getPoints(Request $request)
+    {
+        return response()->json([
+            'total_points' => $request->user()->total_points
+        ]);
+    }
 }
 

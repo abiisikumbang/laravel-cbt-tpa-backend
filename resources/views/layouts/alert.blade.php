@@ -8,4 +8,10 @@
             {{ $message }}
         </div>
     </div>
+
+    {{-- <script>
+        $(function() {
+            $('.alert').fadeIn().delay(3000).fadeOut();
+        });
+    </script> --}}
 @endif
