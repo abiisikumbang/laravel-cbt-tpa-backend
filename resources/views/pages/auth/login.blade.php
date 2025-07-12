@@ -31,6 +31,7 @@
                         </div>
                     </div>
                     @error('password')
+
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

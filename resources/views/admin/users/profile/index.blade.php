@@ -21,6 +21,9 @@
 
             <div class="section-body">
                 <div class="row">
+                    <div class="col-12">
+                        @include('layouts.alert')
+                    </div>
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">User Info</div>
@@ -30,8 +33,6 @@
                                 @endif
                                 <form action="{{ route('profile.update') }}" method="POST">
                                     @csrf
-                                    @method('PUT')
-
                                     <div class="form-group">
                                         <label>Nama</label>
                                         <input type="text" name="name" value="{{ Auth::user()->name }}"
@@ -66,7 +67,7 @@
                                 @if (session('error'))
                                     <div class="alert alert-danger">{{ session('error') }}</div>
                                 @endif
-                                <form action="{{ route('profile.change-password') }}" method="POST">
+                                <form action="{{ route('profile.changePassword') }}" method="POST">
                                     @csrf
 
                                     <div class="form-group">

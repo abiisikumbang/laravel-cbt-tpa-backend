@@ -53,5 +53,7 @@ class FortifyServiceProvider extends ServiceProvider
         fortify::registerView(function () {
             return view('pages.auth.register');
         });
+
+        
     }
 }

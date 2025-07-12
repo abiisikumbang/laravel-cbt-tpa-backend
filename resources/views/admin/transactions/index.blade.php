@@ -14,57 +14,13 @@
     <div class="main-content">
         <section class="section">
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-9 col-12">
-                    <div class="card card-statistic-1">
-                        <div class="card-icon bg-success">
-                            <i class="far fa-user"></i> <!-- icon untuk total transaksi -->
-                        </div>
-                        <div class="card-wrap">
-                            <div class="card-header">
-                                <h4 class="font-weight-bolder">Total Transaksi</h4>
-                            </div>
-                            <div class="card-body">{{ $totalTransactions }}</div> <!-- menampilkan total transaksi -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-9 col-12">
-                    <div class="card card-statistic-1">
-                        <div class="card-icon bg-info">
-                            <i class="fas fa-circle-user"></i> <!-- icon untuk user -->
-                        </div>
-                        <div class="card-wrap">
-                            <div class="card-header">
-                                <h4>Total Transaksi Selesai</h4>
-                            </div>
-                            <div class="card-body">
-                                -- <!-- menampilkan total transaksi selesai -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-9 col-12">
-                    <div class="card card-statistic-1">
-                        <div class="card-icon bg-secondary">
-                            <i class="fas fa-users"></i> <!-- icon untuk total user -->
-                        </div>
-                        <div class="card-wrap">
-                            <div class="card-header">
-                                <h4>--</h4>
-                            </div>
-                            <div class="card-body">
-                                {{-- {{ $totalUser }} --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
         <div class="card">
             <div class="col-12">
-                        @include('layouts.alert')
-                    </div>
+                @include('layouts.alert')
+            </div>
             <div class="card-header d-flex justify-content-between align-items-center">
-
                 <h4>Daftar Transaksi Sampah</h4>
                 <form method="GET" action="{{ route('transactions.index') }}" class="form-inline">
                     <label for="statusFilter" class="mr-2">Filter Status:</label>
@@ -81,25 +37,30 @@
             </div>
         </div>
         <div class="card-body table-responsive">
-            <table class="table table-striped">
+            <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>User</th> <!-- nama user -->
-                        <th>Nama Sampah</th> <!-- nama sampah -->
-                        <th>Jumlah</th> <!-- jumlah sampah -->
+                        <th>Id Transaksi</th>
+                        <th>Nama User</th> <!-- nama user -->
+                        {{-- <th>Nama Sampah</th> <!-- nama sampah --> --}}
+                        <th>Jumlah Subpoint</th> <!-- jumlah sampah -->
                         <th>Tanggal Penjemputan</th> <!-- tanggal penjemputan -->
                         <th>Status</th> <!-- status transaksi -->
                         <th>Aksi</th> <!-- aksi yang bisa dilakukan -->
+                        <th>Hapus</th> <!-- aksi hapus -->
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($transactions as $trx)
                         <tr>
+                            <td>{{ $trx->id }}</td>
                             <td>{{ $trx->user->name }}</td> <!-- nama user -->
-                            <td>{{ $trx->jenis_sampah}}</td> <!-- nama sampah -->
-                            <td>{{ $trx->jumlah }} kg</td> <!-- jumlah sampah -->
-                            <td>{{ Carbon\Carbon::parse($trx->tanggal_penjemputan)->format('d M Y') }}</td> <!-- tanggal penjemputan -->
-                            <td>
+
+                            <td>{{ $trx->wastes->sum('point_value') }} </td> <!-- jumlah sampah -->
+
+                            <td>{{ Carbon\Carbon::parse($trx->pickup_date)->format('d M Y') }}</td> <!-- tanggal penjemputan -->
+
+                            <td> <!-- status transaksi -->
                                 <span
                                     class="badge
                                 @if ($trx->status == 'menunggu konfirmasi') badge-warning
@@ -108,29 +69,41 @@
                                 @else badge-success @endif">
                                     {{ ucfirst($trx->status) }}
                                 </span>
-                            </td> <!-- status transaksi -->
-                            <td>
+                            </td>
+                            <td> <!-- konfirmasi penjemputan -->
                                 @if ($trx->status === 'menunggu konfirmasi')
                                     <form action="{{ url('/sell/' . $trx->id . '/pickup') }}" method="POST"
-                                        style="display:inline;" onsubmit="return showActionMessage('Konfirmasi penjemputan?')">
+                                        style="display:inline;"
+                                        onsubmit="return showActionMessage('Konfirmasi penjemputan?')">
                                         @csrf
                                         <button type="submit" class="btn btn-warning btn-sm">Konfirmasi</button>
-                                    </form> <!-- konfirmasi penjemputan -->
+                                    </form>
                                 @elseif($trx->status === 'dijemput')
+                                    <!-- proses transaksi -->
                                     <form action="{{ url('/sell/' . $trx->id . '/mark-processed') }}" method="POST"
                                         style="display:inline;" onsubmit="return showActionMessage('Proses transaksi?')">
                                         @csrf
                                         <button type="submit" class="btn btn-primary btn-sm">Proses</button>
-                                    </form> <!-- proses transaksi -->
+                                    </form>
                                 @elseif($trx->status === 'diproses')
+                                    <!-- selesaikan transaksi -->
                                     <form action="{{ url('/sell/' . $trx->id . '/complete') }}" method="POST"
-                                        style="display:inline;" onsubmit="return showActionMessage('Selesaikan transaksi?')">
+                                        style="display:inline;"
+                                        onsubmit="return showActionMessage('Selesaikan transaksi?')">
                                         @csrf
                                         <button type="submit" class="btn btn-success btn-sm">Selesaikan</button>
-                                    </form> <!-- selesaikan transaksi -->
+                                    </form>
                                 @else
-                                    <small>Selesai</small>
+                                    <small class="badge badge-success">Selesai</small>
                                 @endif
+                            </td>
+                            <td> <!-- hapus transaksi -->
+                                <form action="{{ url('/sell/' . $trx->id) }}" method="POST" style="display:inline;"
+                                    onsubmit="return showActionMessage('Hapus transaksi ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                </form>
                             </td>
                             <script>
                                 function showActionMessage(message) {
@@ -145,8 +118,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center">
+                {{ $transactions->links() }}
+            </div>
         </div>
-
     </div>
 @endsection
-

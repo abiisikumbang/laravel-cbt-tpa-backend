@@ -22,11 +22,11 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:100|min:3',
-            'email' => 'required|email',
-            // 'password' => 'required|min:8|confirmed',
-            'phone' => 'required',
-            'roles' => 'required|in:ADMIN,STAFF,USER',
+            // 'name' => 'required|max:100|min:3',
+            // 'email' => 'required|email',
+            // // 'password' => 'required|min:8|confirmed',
+            // 'phone' => 'required',
+            'roles' => 'required|in:ADMIN,USER',
         ];
     }
 }

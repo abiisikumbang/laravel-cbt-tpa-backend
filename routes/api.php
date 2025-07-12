@@ -6,6 +6,8 @@ use App\Http\Controllers\SellController;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WasteController;
+use App\Http\Controllers\RewardRedeemController;
+use App\Http\Controllers\RewardItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,45 +19,35 @@ use App\Http\Controllers\WasteController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// fungsi untuk register
-Route::post('register', [AuthController::class, 'register']);
 
-// fungsi untuk login
+// Public Routes
+Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-// fungsi untuk mengambil data user yang login
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::get('/user/points', [UserController::class, 'getPoints']);
 
-// fungsi untuk mengambil data semua waste
-Route::get('/wastes', [WasteController::class, 'index']);
+    //Sell Routes
+    Route::post('/sell', [SellController::class, 'store']);
+    Route::get('/sell/history', [SellController::class, 'history']);
+    Route::get('/sell/history/{id}', [SellController::class, 'show']);
 
-// fungsi untuk membuat transaksi penjualan
-Route::middleware('auth:sanctum')->post('/sell', [SellController::class, 'store']);
+    Route::get('/wastes', [WasteController::class, 'index']);
+    // Redeem Routes
 
-// fungsi untuk mengambil data transaksi penjualan berdasarkan user yang login
-Route::middleware('auth:sanctum')->get('/sell/history', [SellController::class, 'history']);
+    //route untuk menyimpan/membuat transaksi redeem
+    Route::post('/rewards/redeem', [RewardRedeemController::class, 'store']);
+    //route untuk menampilkan history redeem
+    Route::get('/rewards/history', [RewardRedeemController::class, 'history']);
+    //route untuk menampilkan data reward
+    Route::get('/rewards', [RewardItemController::class, 'index']);
 
-// fungsi untuk mengambil data poin user yang login
-Route::middleware('auth:sanctum')->get('/user/points', [UserController::class, 'getPoints']);
-
-// // fungsi untuk mengupdate status penjualan menjadi pickup
-// Route::middleware('auth:sanctum')->post('/sell/{id}/pickup', [SellController::class, 'pickup']);
-
-// // fungsi untuk mengupdate status penjualan menjadi mark processed
-// Route::middleware('auth:sanctum')->post('/sell/{id}/mark-processed', [SellController::class, 'markProcessed']);
-
-// // fungsi untuk mengupdate status penjualan menjadi complete
-// Route::middleware('auth:sanctum')->post('/sell/{id}/complete', [SellController::class, 'completeTransaction']);
-
-
-
-
-// grup route untuk fungsi logout
-Route::middleware('auth:sanctum')->group(function(){
-    // fungsi untuk logout
     Route::post('logout', [AuthController::class, 'logout']);
 });
+
+
 
 

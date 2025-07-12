@@ -3,14 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;    
 
 
 
@@ -23,7 +20,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $totalAdmin = User::where('roles', 'ADMIN')->count();
-        $totalStaff = User::where('roles', 'STAFF')->count();
+        // $totalStaff = User::where('roles', 'STAFF')->count();
         $totalUser = User::where('roles', 'USER')->count();
         $usersTodayData = User::whereDate('created_at', now())->count();
 
@@ -49,7 +46,7 @@ class UserController extends Controller
             ->simplePaginate(5);
 
         // Menampilkan view users.index dan memberikan data users
-        return view('pages.users.index', compact('users', 'totalAdmin', 'totalUser', 'totalStaff'));
+        return view('admin.users.index', compact('users', 'totalAdmin', 'totalUser'));
     }
 
     // Method untuk menampilkan halaman create user
@@ -137,13 +134,13 @@ class UserController extends Controller
     }
 
     // Method untuk Logout
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/login');
-    }
+    // public function logout(Request $request)
+    // {
+    //     Auth::logout();
+    //     $request->session()->invalidate();
+    //     $request->session()->regenerateToken();
+    //     return redirect('/login');
+    // }
 
     public function getPoints(Request $request)
     {

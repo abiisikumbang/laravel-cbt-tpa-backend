@@ -22,11 +22,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name', 
+        'name',
         'email',
         'password',
         'phone',
         'roles',
+        'total_point',
 
     ];
 
@@ -52,4 +53,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function rewardRedeems()
+    {
+        return $this->hasMany(RewardRedeem::class);
+    }
+
+
 }
