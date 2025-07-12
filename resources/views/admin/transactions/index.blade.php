@@ -97,12 +97,12 @@
                                     <small class="badge badge-success">Selesai</small>
                                 @endif
                             </td>
-                            <td> <!-- hapus transaksi -->
+                            <td class="text-center"> <!-- hapus transaksi -->
                                 <form action="{{ url('/sell/' . $trx->id) }}" method="POST" style="display:inline;"
                                     onsubmit="return showActionMessage('Hapus transaksi ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" ></i></button>
                                 </form>
                             </td>
                             <script>
