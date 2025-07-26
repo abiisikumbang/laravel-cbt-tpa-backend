@@ -51,9 +51,9 @@ class WasteController extends Controller
         }
 
         $waste = Waste::create([
-            'name' => $request->name,
-            'point_value' => $request->point_value,
-            'satuan' => $request->satuan,
+            'name' => $request->input('name'),
+            'point_value' => $request->input('point_value'),
+            'satuan' => $request->input('satuan'),
             'image' => $imagePath,
         ]);
 

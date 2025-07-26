@@ -19,65 +19,70 @@ class RewardRedeemController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi request yang masuk
+        // 1. Validasi Request
         $request->validate([
             'items' => 'required|array|min:1',
-            'items.*.stock_id' => 'required|exists:stocks,id', // Memastikan stock_id valid
+            'items.*.stock_id' => 'required|exists:stocks,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Mendapatkan user saat ini
+        // 2. Ambil user yang sedang login
         $user = User::find(Auth::id());
 
-        // Memulai transaksi database
+        // 3. Mulai transaksi database
         DB::beginTransaction();
 
         try {
-            // Inisialisasi variabel untuk total poin yang dibutuhkan dan item yang akan ditebus
+            // 4. Proses tiap item: validasi stok, hitung poin, siapkan data
             $totalPointsNeeded = 0;
-            $redeemItemsData = []; // Ubah nama variabel agar lebih jelas, ini adalah data array untuk item
+            $redeemItemsData = [];
+            $stockCache = [];
 
-            // Iterasi setiap item dalam request
             foreach ($request->items as $item) {
-                // Mencari item reward berdasarkan ID
-                // Cek apakah stock sudah diambil sebelumnya, jika belum ambil dan simpan di array
-                static $stockCache = [];
-                if (!isset($stockCache[$item['stock_id']])) {
-                    $stockCache[$item['stock_id']] = Stock::find($item['stock_id']);
-                }
-                $stock = $stockCache[$item['stock_id']];
+                $stockId = $item['stock_id'];
+                $quantity = $item['quantity'];
 
-                // Jika stok tidak ditemukan atau tidak cukup, lemparkan exception
-                if (!$stock) { // Pastikan stok ditemukan sebelum cek kuantitas
-                    throw new \Exception("Produk reward dengan ID {$item['stock_id']} tidak ditemukan.");
+                // Ambil stock dari cache jika sudah, jika belum ambil dari DB
+                if (!isset($stockCache[$stockId])) {
+                    $stockCache[$stockId] = Stock::find($stockId);
                 }
-                if ($stock->stock < $item['quantity']) {
-                    throw new \Exception("Stok untuk {$stock->name} tidak cukup. Tersedia: {$stock->stock}, Diminta: {$item['quantity']}.");
+                $stock = $stockCache[$stockId];
+
+                // Validasi stok
+                if (!$stock) {
+                    throw new \Exception("Produk reward dengan ID {$stockId} tidak ditemukan.");
+                }
+                if ($stock->stock < $quantity) {
+                    throw new \Exception("Stok untuk {$stock->name} tidak cukup. Tersedia: {$stock->stock}, Diminta: {$quantity}.");
                 }
 
-                // Tambahkan item ke daftar item yang akan ditebus
+                // Hitung total poin yang dibutuhkan
+                $pointCost = $stock->point_cost;
+                $totalPointsNeeded += $pointCost * $quantity;
+
+                // Simpan data item untuk proses berikutnya
                 $redeemItemsData[] = [
-                    'stock_id' => $stock->id, // <--- PENTING: Gunakan 'stock_id' di sini
-                    'quantity' => $item['quantity'],
-                    'point_spent_per_item' => $stock->point_cost, // Ini adalah poin per unit item
+                    'stock_id' => $stock->id,
+                    'quantity' => $quantity,
+                    'point_spent_per_item' => $pointCost,
                 ];
             }
 
-            // Jika poin user tidak cukup, lemparkan exception
+            // 5. Cek apakah poin user cukup
             if ($user->total_points < $totalPointsNeeded) {
-                throw new \Exception("Poin Anda tidak cukup. Dibutuhkan: $totalPointsNeeded, Tersedia: $user->total_points");
+                throw new \Exception("Poin tidak cukup. Dibutuhkan: $totalPointsNeeded, Tersedia: $user->total_points.");
             }
 
-            // Simpan transaksi redeem utama
+            // 6. Simpan transaksi redeem utama
             $redeem = RewardRedeem::create([
                 'user_id' => $user->id,
                 'total_points_spent' => $totalPointsNeeded,
                 'status' => 'menunggu konfirmasi',
             ]);
 
-            // Iterasi setiap item yang ditebus untuk disimpan dan update stok
-            foreach ($redeemItemsData as $itemData) { // Gunakan itemData agar tidak bentrok dengan $item dari request awal
-                // Simpan item redeem ke tabel reward_redeem_items
+            // 7. Simpan tiap item dan update stok
+            foreach ($redeemItemsData as $itemData) {
+                // Simpan item ke tabel reward_redeem_items
                 RewardRedeemItem::create([
                     'reward_redeem_id' => $redeem->id,
                     'stock_id' => $itemData['stock_id'],
@@ -85,38 +90,35 @@ class RewardRedeemController extends Controller
                     'point_spent_per_item' => $itemData['point_spent_per_item'],
                 ]);
 
-                $currentStock = Stock::find($itemData['stock_id']);
-                if ($currentStock) { // Periksa lagi jika stock masih ada (meskipun sudah divalidasi di awal)
-                    $currentStock->stock -= $itemData['quantity'];
-                    $currentStock->save();
-                }
+                // Update stok produk
+                $stock = $stockCache[$itemData['stock_id']];
+                $stock->stock -= $itemData['quantity'];
+                $stock->save();
             }
 
-            // Kurangi poin user
+            // 8. Kurangi poin user
             $user->total_points -= $totalPointsNeeded;
             $user->save();
 
-            // Commit transaksi database
+            // 9. Commit transaksi dan return sukses
             DB::commit();
 
-            // Kembalikan respon JSON sukses
             return response()->json([
                 'message' => 'Penukaran berhasil diajukan.',
-                'redeem' => $redeem->load(['redeemItems.stock']) // <--- Perbaiki pemuatan relasi
-                // 'redeemItems.stock' untuk memuat item redeem dan stock terkait
+                'redeem' => $redeem->load(['redeemItems.stock']),
             ], 200);
 
         } catch (\Exception $e) {
-            // Rollback transaksi jika terjadi kesalahan
+            // 10. Rollback jika ada error
             DB::rollBack();
 
-            // Kembalikan respon JSON error
             return response()->json([
                 'message' => 'Penukaran gagal.',
                 'error' => $e->getMessage(),
             ], 400);
         }
     }
+
 
     public function history()
     {
@@ -130,6 +132,7 @@ class RewardRedeemController extends Controller
                     ->get();
 
         // Kembalikan respon JSON dengan data reward redeem
+        dd($redeems);
         return response()->json($redeems);
     }
 }

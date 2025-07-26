@@ -45,6 +45,7 @@
                         <th>Tanggal Redeem</th>
                         <th>Status</th>
                         <th>Aksi</th>
+                        <th>Hapus</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,6 +112,16 @@
                                 @else
                                     <small>Selesai</small>
                                 @endif
+                            </td>
+
+                            {{-- hapus redeem --}}
+                            <td>
+                                <form action="{{ url('/redeem/' . $redeem->id) }}" method="POST" style="display:inline;"
+                                    onsubmit="return showActionMessage('Hapus redeem ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" ></i></button>
+                                </form>
                             </td>
                             <script>
                                 function showActionMessage(message) {

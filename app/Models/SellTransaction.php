@@ -19,7 +19,8 @@ class SellTransaction extends Model
     protected $fillable = [
         'user_id',
         'address',
-        'phone_number',
+        // 'phone_number',
+        'phone',
         'pickup_date',
     ];
 

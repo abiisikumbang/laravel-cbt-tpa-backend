@@ -23,7 +23,8 @@ class StoreSellRequest extends FormRequest
     {
         return [
             'address' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
+            // 'phone_number' => 'required|string|max:20',
+            'phone' => 'required|string|max:20',
             'pickup_date' => 'required|date_format:Y-m-d| after_or_equal:today',
             'wastes' => 'required|array|min:1',
             'wastes.*.waste_id' => 'required|exists:wastes,id',
@@ -40,7 +41,8 @@ class StoreSellRequest extends FormRequest
     {
         return [
             'address.required' => 'Alamat harus diisi.',
-            'phone_number.required' => 'Nomor telepon harus diisi.',
+            // 'phone_number.required' => 'Nomor telepon harus diisi.', 
+            'phone.required' => 'Nomor telepon harus diisi.',
             'pickup_date.required' => 'Tanggal penjemputan harus diisi.',
             'pickup_date.date_format' => 'Format tanggal penjemputan tidak valid. Gunakan format YYYY-MM-DD.',
             'pickup_date.after_or_equal' => 'Tanggal penjemputan tidak boleh sebelum hari ini.',

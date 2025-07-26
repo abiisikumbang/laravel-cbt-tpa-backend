@@ -57,6 +57,7 @@ Route::post('/logout', [CustomLoginController::class, 'logout'])->name('logout')
     Route::get('/tabel-redeem', [RedeemController::class, 'index'])->name('redeem.index');
     //route untuk menampilkan detail redeem
     Route::get('/redeem-detail/{id}', [RedeemController::class, 'detail'])->name('redeem.detail');
+    Route::delete('/redeem/{id}', [RedeemController::class, 'deleteTransaction'])->name('redeem.delete');
 
     // Waste Routes
     Route::get('/tabel-sampah', [WasteController::class, 'AdminIndex'])->name('wastes.index'); //route untuk menampilkan tabel sampah

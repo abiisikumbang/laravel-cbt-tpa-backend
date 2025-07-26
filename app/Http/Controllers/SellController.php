@@ -11,12 +11,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
-class   SellController extends Controller
+class SellController extends Controller
 {
     //Simpan transaksi penjualan oleh user.
     public function store(StoreSellRequest $request)
     {
+         Log::info('API Sell store hit!');
         // Ambil data yang diinput dan divalidasi oleh StoreSellRequest
         $data = $request->validated();
 
@@ -27,16 +29,11 @@ class   SellController extends Controller
             // Ambil user yang sedang login
             $user = User::findOrFail(Auth::id());
 
-            // Buat transaksi utama
-            // - user_id: id user yang sedang login
-            // - address: alamat user
-            // - phone_number: nomor telepon user
-            // - pickup_date: tanggal penjemputan yang diinput user
-            // - status: status transaksi awal (menunggu konfirmasi)
             $transaction = SellTransaction::create([
                 'user_id'       => $user->id,
                 'address'       => $data['address'],
-                'phone_number'  => $data['phone_number'],
+                // 'phone_number'  => $data['phone_number'],
+                'phone'         => $data['phone'],
                 'pickup_date'   => $data['pickup_date'],
                 'status'        => 'menunggu konfirmasi',
             ]);
@@ -49,11 +46,6 @@ class   SellController extends Controller
                 // Hitung subtotal poin untuk setiap item
                 $subtotalPoint = $wasteModel->point_value * $waste['quantity'];
 
-                // Simpan item-item transaksi
-                // - transaction_id: id transaksi yang sedang dibuat
-                // - waste_id: id waste yang diinput
-                // - quantity: kuantitas waste yang diinput
-                // - subtotal_point: poin yang didapat dari setiap item
                 SellTransactionItem::create([
                     'transaction_id' => $transaction->id,
                     'waste_id'       => $waste['waste_id'],
