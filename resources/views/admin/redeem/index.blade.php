@@ -78,6 +78,10 @@
                                         badge-primary
                                         @break
 
+                                    @case('batal')
+                                        badge-danger
+                                        @break
+
                                     @default
                                         badge-success
                                 @endswitch">
@@ -94,12 +98,18 @@
                                         <button type="submit" class="btn btn-warning btn-sm">Konfirmasi</button>
                                     </form>
                                 @elseif($redeem->status === 'diantar')
-                                    <!-- selesaikan penukaran -->
+                                    <!-- proses penukaran -->
                                     <form action="{{ url('/redeem/' . $redeem->id . '/processed') }}" method="POST"
                                         style="display:inline;"
                                         onsubmit="return showActionMessage('Proses Redeem?')">
                                         @csrf
                                         <button type="submit" class="btn btn-primary btn-sm">Proses</button>
+                                    </form>
+                                    <!-- batal penukaran -->
+                                    <form action="{{ url('/redeem/' . $redeem->id . '/cancel') }}" method="POST"
+                                        style="display:inline;" onsubmit="return showActionMessage('Batal transaksi?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm">Batal</button>
                                     </form>
                                 @elseif ($redeem->status === 'diproses')
                                     <!-- selesaikan penukaran -->

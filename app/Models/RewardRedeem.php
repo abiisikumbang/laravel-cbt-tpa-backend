@@ -73,8 +73,8 @@ class RewardRedeem extends Model
     {
         return $this->belongsToMany(Stock::class, 'reward_redeem_items', 'reward_redeem_id', 'stock_id')
                     ->withPivot(['quantity', 'point_spent_per_item']) // Kolom-kolom di tabel pivot
-                    ->withTimestamps() // created_at dan updated_at di tabel pivot
-                    ->using(RewardRedeemItem::class); // Menggunakan model pivot kustom
+                    ->withTimestamps(); // created_at dan updated_at di tabel pivot
+                    // ->using(RewardRedeemItem::class); // Menggunakan model pivot kustom
     }
 }
 

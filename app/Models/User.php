@@ -54,10 +54,10 @@ class User extends Authenticatable
         ];
     }
 
-    public function rewardRedeems()
-    {
-        return $this->hasMany(RewardRedeem::class);
-    }
+    // public function rewardRedeems()
+    // {
+    //     return $this->hasMany(RewardRedeem::class);
+    // }
 
 
 }

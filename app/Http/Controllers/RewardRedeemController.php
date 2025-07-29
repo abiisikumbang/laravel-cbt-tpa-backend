@@ -97,7 +97,7 @@ class RewardRedeemController extends Controller
             }
 
             // 8. Kurangi poin user
-            $user->total_points -= $totalPointsNeeded;
+            // $user->total_points -= $totalPointsNeeded;
             $user->save();
 
             // 9. Commit transaksi dan return sukses
@@ -122,18 +122,44 @@ class RewardRedeemController extends Controller
 
     public function history()
     {
-        // Mendapatkan user saat ini
-        $userId = Auth::id();
+        try {
+            // Mendapatkan user saat ini
+            $userId = Auth::id();
 
-        // Mendapatkan daftar reward redeem milik user
-        $redeems = RewardRedeem::with('items.stock')
-                    ->where('user_id', $userId)
-                    ->orderByDesc('created_at')
-                    ->get();
+            // Mendapatkan daftar reward redeem milik user
+            $redeems = RewardRedeem::with('stocks', 'redeemItems.stock')
+                        ->where('user_id', $userId)
+                        ->orderByDesc('created_at')
+                        ->get();
 
-        // Kembalikan respon JSON dengan data reward redeem
-        dd($redeems);
-        return response()->json($redeems);
+            return response()->json([
+                'data' => $redeems
+            ]);
+        } catch (\Throwable $e) {
+            Log::error("Gagal mengambil riwayat penukaran: " . $e->getMessage());
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat mengambil riwayat.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            // Mendapatkan detail redeem berdasarkan ID
+            $redeem = RewardRedeem::with('redeemItems.stock')->findOrFail($id);
+
+            return response()->json([
+                'data' => $redeem
+            ]);
+        } catch (\Throwable $e) {
+            Log::error("Gagal mengambil detail penukaran: " . $e->getMessage());
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat mengambil detail penukaran.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
 

@@ -32,16 +32,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Sell Routes
     Route::post('/sell', [SellController::class, 'store']);
-    Route::get('/sell/history', [SellController::class, 'history']);
+    Route::get('/sell/history',     [SellController::class, 'history']);
     Route::get('/sell/history/{id}', [SellController::class, 'show']);
-
     Route::get('/wastes', [WasteController::class, 'index']);
-    // Redeem Routes
 
+    // Redeem Routes
     //route untuk menyimpan/membuat transaksi redeem
     Route::post('/rewards/redeem', [RewardRedeemController::class, 'store']);
     //route untuk menampilkan history redeem
     Route::get('/rewards/history', [RewardRedeemController::class, 'history']);
+    //route untuk menampilkan detail redeem
+    Route::get('/rewards/history/{id}', [RewardRedeemController::class, 'show']);
     //route untuk menampilkan data reward
     Route::get('/rewards', [RewardItemController::class, 'index']);
 

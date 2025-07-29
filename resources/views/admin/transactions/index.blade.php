@@ -45,6 +45,7 @@
                         {{-- <th>Nama Sampah</th> <!-- nama sampah --> --}}
                         <th>Jumlah Subpoint</th> <!-- jumlah sampah -->
                         <th>Tanggal Penjemputan</th> <!-- tanggal penjemputan -->
+                        <th>Alamat Penjemputan</th> <!-- alamat penjemputan -->
                         <th>Status</th> <!-- status transaksi -->
                         <th>Aksi</th> <!-- aksi yang bisa dilakukan -->
                         <th>Hapus</th> <!-- aksi hapus -->
@@ -60,12 +61,15 @@
 
                             <td>{{ Carbon\Carbon::parse($trx->pickup_date)->format('d M Y') }}</td> <!-- tanggal penjemputan -->
 
+                            <td>{{ $trx->address }}</td> <!-- alamat penjemputan -->
+
                             <td> <!-- status transaksi -->
                                 <span
                                     class="badge
                                 @if ($trx->status == 'menunggu konfirmasi') badge-warning
                                 @elseif($trx->status == 'dijemput') badge-info
                                 @elseif($trx->status == 'diproses') badge-primary
+                                @elseif ($trx->status == 'batal') badge-danger
                                 @else badge-success @endif">
                                     {{ ucfirst($trx->status) }}
                                 </span>
@@ -84,6 +88,12 @@
                                         style="display:inline;" onsubmit="return showActionMessage('Proses transaksi?')">
                                         @csrf
                                         <button type="submit" class="btn btn-primary btn-sm">Proses</button>
+                                    </form>
+                                    <!-- batal transaksi -->
+                                    <form action="{{ url('/sell/' . $trx->id . '/cancel') }}" method="POST"
+                                        style="display:inline;" onsubmit="return showActionMessage('Batal transaksi?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm">Batal</button>
                                     </form>
                                 @elseif($trx->status === 'diproses')
                                     <!-- selesaikan transaksi -->

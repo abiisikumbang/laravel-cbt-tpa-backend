@@ -107,9 +107,21 @@ class RedeemController extends Controller
         }
     }
 
+    //fungsi untuk membatalkan transaksi redeem
+    public function cancelRedeem($id)
+    {
+        $redeem = RewardRedeem::findOrFail($id);
+        $redeem->status = 'batal';
+        $redeem->save();
+
+        return redirect()->back()->with('success', 'Transaksi berhasil dibatalkan.');
+    }
+
     public function deleteTransaction($id)
     {
         $redeem = RewardRedeem::findOrFail($id);
+        $redeem->items()->delete();
+        $redeem->delete();
         $redeem->items()->delete(); // Hapus item terkait
         $redeem->delete(); // Hapus transaksi utama
         return back()->with('success', 'Transaksi berhasil dihapus.');

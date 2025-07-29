@@ -136,7 +136,7 @@ class SellController extends Controller
                 'name' => $item->waste->name,
                 'point_value' => $item->waste->point_value,
                 'quantity' => $item->quantity,
-                'image' => Storage::url($item->waste->image), // Lebih aman daripada asset()
+                // 'image' => Storage::url($item->waste->image),
             ];
         });
             // Susun data response
@@ -201,6 +201,16 @@ class SellController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal menyelesaikan transaksi: ' . $e->getMessage());
         }
+    }
+
+    //Admin: Membatalkan transaksi.
+    public function cancelTransaction($id)
+    {
+        $transaction = SellTransaction::findOrFail($id);
+        $transaction->status = 'batal';
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Transaksi berhasil dibatalkan.');
     }
 
     // Hapus transaksi

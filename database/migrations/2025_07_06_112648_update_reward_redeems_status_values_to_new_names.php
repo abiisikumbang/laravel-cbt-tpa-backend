@@ -14,10 +14,7 @@ return new class extends Migration
         DB::table('reward_redeems')->where('status', 'pending')->update(['status' => 'menunggu konfirmasi']);
         DB::table('reward_redeems')->where('status', 'approved')->update(['status' => 'diantar']); // Asumsi 'approved' menjadi 'diantar'
         DB::table('reward_redeems')->where('status', 'delivered')->update(['status' => 'selesai']); // Asumsi 'delivered' menjadi 'selesai'
-        DB::table('reward_redeems')->where('status', 'rejected')->update(['status' => 'diproses']); // Asumsi 'rejected' menjadi 'diproses'
-        // Sesuaikan mapping di atas jika "diantar" atau "diproses" bukan padanan yang tepat untuk "approved" dan "rejected".
-        // Jika Anda tidak memiliki padanan untuk 'rejected' (misal: 'Dibatalkan'), sesuaikan juga.
-        // Contoh: DB::table('reward_redeems')->where('status', 'rejected')->update(['status' => 'dibatalkan']);
+        DB::table('reward_redeems')->where('status', 'rejected')->update(['status' => 'diproses']); // Asumsi 
     }
 
     /**

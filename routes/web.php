@@ -46,12 +46,14 @@ Route::post('/logout', [CustomLoginController::class, 'logout'])->name('logout')
     Route::post('/sell/{id}/pickup', [SellController::class, 'pickup'])->name('sell.pickup');
     Route::post('/sell/{id}/mark-processed', [SellController::class, 'markProcessed']) ->name('sell.markProcessed');
     Route::post('/sell/{id}/complete', [SellController::class, 'completeTransaction']) ->name('sell.completeTransaction');
+    Route::post('/sell/{id}/cancel', [SellController::class, 'cancelTransaction']) ->name('sell.cancelTransaction');
     Route::delete('/sell/{id}', [SellController::class, 'deleteTransaction'])->name('sell.delete'); //route untuk menghapus transaksi penjualan
     Route::get('/tabel-transaksi', [SellController::class, 'index'])->name('transactions.index'); //route untuk menampilkan tabel transaksi penjualan
 
     // Redeem Routes
     Route::post('/redeem/{id}/delivered', [RedeemController::class, 'delivered']) ->name('redeem.delivered');
     Route::post('/redeem/{id}/processed', [RedeemController::class, 'Processed'])   ->name('redeem.processed');
+    Route::post('/redeem/{id}/cancel', [RedeemController::class, 'cancelRedeem']) ->name('redeem.cancel');
     Route::post('/redeem/{id}/complete', [RedeemController::class, 'completeRedeem']) ->name('redeem.complete');
     //route untuk menampilkan tabel redeem
     Route::get('/tabel-redeem', [RedeemController::class, 'index'])->name('redeem.index');
