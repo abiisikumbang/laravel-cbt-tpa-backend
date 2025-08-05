@@ -1,14 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreWasteRequest;
+use App\Http\Requests\UpdateWasteRequest;
 use App\Models\Waste;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 
 class WasteController extends Controller
 {
-    public function index()
+
+    //controller untuk menampilkan daftar sampah
+    public function indexApi()
     {
         $wastes = Waste::select('id', 'name', 'point_value', 'satuan', 'image')->paginate(10);
 
@@ -24,68 +28,87 @@ class WasteController extends Controller
         ], 200);
     }
 
-    public function adminIndex()
+
+
+
+    //controller untuk menampilkan daftar sampah untuk admin
+    public function index()
     {
         $wastes = Waste::all();
         return view('admin.wastes.index', compact('wastes'));
     }
-
+    //controller untuk menampilkan form tambah sampah
     public function create()
     {
         return view('wastes.create');
     }
-
-    public function store(Request $request)
+    //controller untuk menyimpan data sampah baru
+    public function store(StoreWasteRequest $request)
     {
-        $request->validate([
+        try {
+            // Simpan file gambar secara publik dan dapatkan pathnya
+            $imagePath = $request->file('image')->storePublicly('wastes', 'public');
 
-            'name' => 'required|string|max:255',
-            'point_value' => 'required|integer|min:0',
-            'satuan' => 'required|string|max:50',
-            'image' => 'nullable|image|max:2048',
-        ]);
+            // Buat data sampah baru dengan informasi yang diberikan
+            $waste = Waste::create([
+                'name' => $request->name, // Set nama sampah
+                'point_value' => $request->point_value, // Set nilai poin
+                'satuan' => $request->satuan, // Set satuan
+                'image' => $imagePath, // Set path gambar
+            ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('wastes', 'public');
+            // Periksa jika response yang diharapkan adalah JSON
+            if ($request->expectsJson()) {
+                // Kembalikan response JSON dengan pesan sukses dan data sampah
+                return response()->json([
+                    'message' => 'Data sampah berhasil ditambahkan.',
+                    'data' => $waste->append('image_url'), // Tambahkan URL gambar
+                ], 201);
+            }
+
+            // Redirect ke halaman indeks sampah dengan pesan sukses
+            return redirect()->route('wastes.index')
+                            ->with('success', 'Data berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            // Catat error jika terjadi kegagalan saat menyimpan sampah
+            Log::error('Failed to store waste: '.$e->getMessage());
+            // Kembalikan response error secara JSON
+            return response()->json(['error' => 'Something went wrong.'], 500);
         }
-
-        $waste = Waste::create([
-            'name' => $request->input('name'),
-            'point_value' => $request->input('point_value'),
-            'satuan' => $request->input('satuan'),
-            'image' => $imagePath,
-        ]);
-
-        if ($request->expectsJson() || $request->isJson()) {
-            return response()->json([
-                'message' => 'Data sampah berhasil ditambahkan.',
-                'data' => $waste->append('image_url')
-            ], 201);
-        }
-
-        return redirect()->route('wastes.index')->with('success', 'Data berhasil ditambahkan.');
     }
-
-    public function update(Request $request, Waste $waste) {
-        $data = $request->validate([
-            'name' => 'required',
-            'point_value' => 'required|integer|min:0',
-            'satuan' => 'required',
-            'image' => 'nullable|image',
-        ]);
+    //controller untuk mengupdate data sampah
+    public function update(UpdateWasteRequest $request, Waste $waste)
+    {
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('wastes', 'public');
+            if ($waste->image) {
+                Storage::disk('public')->delete($waste->image);
+            }
+            $data['image'] = $request->file('image')->storePublicly('wastes', 'public');
         }
 
         $waste->update($data);
-        return back()->with('success', 'Data sampah diperbarui.');
-    }
 
+        return redirect()->route('wastes.index')->with('success', 'Data sampah diperbarui.');
+    }
+    //controller untuk menghapus data sampah
     public function destroy(Waste $waste) {
-        $waste->delete();
-        return back()->with('success', 'Data sampah dihapus.');
+        try {
+            // Hapus gambar dari penyimpanan jika ada
+            if ($waste->image && Storage::disk('public')->exists($waste->image)) {
+                Storage::disk('public')->delete($waste->image);
+            }
+
+            // Hapus data sampah
+            $waste->delete();
+
+            return back()->with('success', 'Data sampah dihapus.');
+        } catch (\Exception $e) {
+            // Catat error jika terjadi kegagalan saat menghapus sampah
+            Log::error("Failed to delete waste with ID {$waste->id}: {$e->getMessage()}");
+            return redirect()->route('wastes.index')->with('error', 'Gagal menghapus data sampah.');
+        }
     }
 }
 

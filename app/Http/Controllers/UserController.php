@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use Illuminate\Support\Facades\Auth;    
 
 
 
@@ -132,16 +131,7 @@ class UserController extends Controller
         // Menampilkan view users.show dan memberikan data user
         return view('pages.users.show', compact('user'));
     }
-
-    // Method untuk Logout
-    // public function logout(Request $request)
-    // {
-    //     Auth::logout();
-    //     $request->session()->invalidate();
-    //     $request->session()->regenerateToken();
-    //     return redirect('/login');
-    // }
-
+    // Method untuk menampilkan total points dari API
     public function getPoints(Request $request)
     {
         return response()->json([

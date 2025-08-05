@@ -50,7 +50,7 @@
                                                             {{-- phone --}}
                                                             <div class="form-group">
                                                                 <label class="form-label">Phone</label>
-                                                                <input type="number" class="form-control"
+                                                                <input type="int" class="form-control"
                                                                     name="phone">
                                                             </div>
                                                             {{-- password --}}

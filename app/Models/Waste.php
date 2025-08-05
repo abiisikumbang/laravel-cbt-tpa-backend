@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class Waste
@@ -28,5 +29,14 @@ class Waste extends Model
         'point_value',
         'image',
     ];
+
+    protected static function booted()
+    {
+        static::deleting(function ($waste) {
+            if ($waste->image && Storage::disk('public')->exists($waste->image)) {
+                Storage::disk('public')->delete($waste->image);
+            }
+        });
+    }
 }
 

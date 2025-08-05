@@ -31,10 +31,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/points', [UserController::class, 'getPoints']);
 
     //Sell Routes
+    //route untuk menyimpan/membuat transaksi penjualan
     Route::post('/sell', [SellController::class, 'store']);
+    //route untuk menampilkan history penjualan
     Route::get('/sell/history',     [SellController::class, 'history']);
+    //route untuk menampilkan detail penjualan
     Route::get('/sell/history/{id}', [SellController::class, 'show']);
-    Route::get('/wastes', [WasteController::class, 'index']);
+    //route untuk menampilkan data sampah
+    Route::get('/wastes', [WasteController::class, 'indexApi']);
 
     // Redeem Routes
     //route untuk menyimpan/membuat transaksi redeem

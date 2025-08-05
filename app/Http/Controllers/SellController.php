@@ -10,15 +10,19 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 class SellController extends Controller
 {
     //Simpan transaksi penjualan oleh user.
+    /**
+     * Store a newly created SellTransaction in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(StoreSellRequest $request)
     {
-         Log::info('API Sell store hit!');
         // Ambil data yang diinput dan divalidasi oleh StoreSellRequest
         $data = $request->validated();
 
@@ -29,6 +33,7 @@ class SellController extends Controller
             // Ambil user yang sedang login
             $user = User::findOrFail(Auth::id());
 
+            // Buat SellTransaction baru
             $transaction = SellTransaction::create([
                 'user_id'       => $user->id,
                 'address'       => $data['address'],
@@ -46,6 +51,7 @@ class SellController extends Controller
                 // Hitung subtotal poin untuk setiap item
                 $subtotalPoint = $wasteModel->point_value * $waste['quantity'];
 
+                // Buat SellTransactionItem baru untuk setiap item transaksi
                 SellTransactionItem::create([
                     'transaction_id' => $transaction->id,
                     'waste_id'       => $waste['waste_id'],
@@ -61,7 +67,7 @@ class SellController extends Controller
             return response()->json([
                 'message' => 'Transaksi berhasil disimpan',
                 'data'    => $transaction
-            ], 201);
+            ], 201)->toResponse($request);
         }
         catch (\Throwable $e) {
             // Rollback transaksi database jika terjadi error
@@ -71,7 +77,7 @@ class SellController extends Controller
             return response()->json([
                 'message' => 'Gagal menyimpan transaksi',
                 'error'   => $e->getMessage()
-            ], 500);
+            ], 500)->toResponse($request);
         }
     }
 

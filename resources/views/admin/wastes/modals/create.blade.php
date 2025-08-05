@@ -25,7 +25,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label>Gambar</label>
-                                    <input type="file" name="image" class="form-control" required>
+                                    <input type="file" name="image" accept="image/*" class="form-control" required
+                                        id="imageInput">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -33,6 +34,18 @@
                                 <button class="btn btn-primary" type="submit"
                                     onclick="this.disabled=true; this.form.submit();">Simpan</button>
                             </div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const imageInput = document.getElementById('imageInput');
+                                    imageInput.addEventListener('change', function(e) {
+                                        const file = e.target.files[0];
+                                        if (file && !file.type.startsWith('image/')) {
+                                            alert('file harus berupa gambar');
+                                            e.target.value = '';
+                                        }
+                                    });
+                                });
+                            </script>
                         </form>
                     </div>
                 </div>

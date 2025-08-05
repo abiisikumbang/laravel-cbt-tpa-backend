@@ -62,12 +62,7 @@ Route::post('/logout', [CustomLoginController::class, 'logout'])->name('logout')
     Route::delete('/redeem/{id}', [RedeemController::class, 'deleteTransaction'])->name('redeem.delete');
 
     // Waste Routes
-    Route::get('/tabel-sampah', [WasteController::class, 'AdminIndex'])->name('wastes.index'); //route untuk menampilkan tabel sampah
-    Route::get('/tambah-sampah', [WasteController::class, 'create'])->name('wastes.create'); //route untuk menampilkan form tambah sampah
-    Route::post('/tambah-sampah', [WasteController::class, 'store'])->name('wastes.store'); //route untuk menyimpan sampah
-    Route::get('/edit-sampah/{waste}', [WasteController::class, 'edit'])->name('wastes.edit'); //route untuk menampilkan form edit sampah
-    Route::put('/edit-sampah/{waste}', [WasteController::class, 'update'])->name('wastes.update'); //route untuk mengupdate sampah
-    Route::delete('/hapus-sampah/{waste}', [WasteController::class, 'destroy'])->name('wastes.destroy'); //route untuk menghapus sampah
+    Route::resource('wastes', WasteController::class); //route untuk mengelola data sampah
 
     // Stock Routes
     Route::resource('stocks', StockController::class); //route untuk mengelola stok reward

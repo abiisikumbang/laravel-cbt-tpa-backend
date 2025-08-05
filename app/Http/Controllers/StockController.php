@@ -3,116 +3,103 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\StoreStockRequest;
+use App\Http\Requests\UpdateStockRequest;
 use App\Models\Stock;
 use Illuminate\Support\Facades\Storage;
 
 class StockController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    //controller untuk menampilkan detail stok
+    public function show(string $id)
+    {
+        $stock = Stock::findOrFail($id);
+        return view('admin.stocks.modals.show', compact('stock'));
+    }
+    //controller untuk menampilkan form edit stok
+    public function edit(string $id)
+    {
+        $stock = Stock::findOrFail($id);
+        return view('admin.stocks.modals.edit', compact('stock'));
+    }
+     //controller untuk menampilkan form tambah stok
+    public function create()
+    {
+         return view('admin.stocks.modals.create');
+    }
+
+
+    //controller untuk menampilkan daftar stok
     public function index()
     {
         $stocks = Stock::latest()->get();
         return view('admin.stocks.index', compact('stocks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    //controller untuk menyimpan data stok baru
+    public function store(StoreStockRequest $request)
     {
-         return view('admin.stocks.modals.create');
-    }
+        try {
+            $imagePath = $request->file('image')->storePublicly('stocks', 'public');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-        'name' => 'required|string',
-        'point_cost' => 'required|integer',
-        'stock' => 'required|integer',
-        'image' => 'required|image|max:2048',
-    ]);
+            Stock::create([
+                'name' => $request->name,
+                'point_cost' => $request->point_cost,
+                'stock' => $request->stock,
+                'image' => $imagePath,
+            ]);
 
-    $imagePath = $request->file('image')->store('stocks', 'public');
+            return redirect()->route('stocks.index')->with('success', 'Stock berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            Log::error('Failed to store stock: ' . $e->getMessage());
 
-    Stock::create([
-        'name' => $validated['name'],
-        'point_cost' => $validated['point_cost'],
-        'stock' => $validated['stock'],
-        'image' => $imagePath,
-    ]);
-
-    return redirect()->route('stocks.index')->with('success', 'Stock berhasil ditambahkan.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $stock = Stock::findOrFail($id);
-        return view('admin.stocks.modals.show', compact('stock'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $stock = Stock::findOrFail($id);
-        return view('admin.stocks.modals.edit', compact('stock'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-        'name' => 'required|string|max:255',
-        'point_cost' => 'required|numeric',
-        'stock' => 'required|integer',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    $stock = Stock::findOrFail($id);
-
-    $imagePath = $stock->image;
-    if ($request->hasFile('image')) {
-        // Hapus gambar lama jika ada
-        if ($stock->image && Storage::disk('public')->exists($stock->image)) {
-            Storage::disk('public')->delete($stock->image);
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data stok.');
         }
-        $imagePath = $request->file('image')->store('products', 'public');
     }
 
-    $stock->update([
-        'name' => $request->name,
-        'point_cost' => $request->point_cost,
-        'stock' => $request->stock,
-        'image' => $imagePath,
-    ]);
+    //controller untuk memperbarui data stok
+    public function update(UpdateStockRequest $request, Stock $stock)
+    {
+        try {
+            $data = $request->validated();
 
-    return redirect()->route('stocks.index')->with('success', 'Produk berhasil diperbarui');
+            if ($request->hasFile('image')) {
+                if ($stock->image && Storage::disk('public')->exists($stock->image)) {
+                    Storage::disk('public')->delete($stock->image);
+                }
+
+                $data['image'] = $request->file('image')->store('stocks', 'public');
+            }
+
+            $stock->update($data);
+
+            return redirect()->route('stocks.index')->with('success', 'Produk berhasil diperbarui');
+        } catch (\Exception $e) {
+            Log::error("Failed to update stock with ID {$stock->id}: {$e->getMessage()}");
+
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui produk.');
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    //controller untuk menghapus stok
     public function destroy(string $id)
     {
-        $stock = Stock::findOrFail($id);
-        // Hapus gambar jika ada
-        if ($stock->image && Storage::disk('public')->exists($stock->image)) {
-            Storage::disk('public')->delete($stock->image);
+        try {
+            $stock = Stock::findOrFail($id);
+            // Hapus gambar jika ada
+            if ($stock->image && Storage::disk('public')->exists($stock->image)) {
+                Storage::disk('public')->delete($stock->image);
+            }
+
+            $stock->delete();
+
+            return redirect()->route('stocks.index')->with('success', 'Produk berhasil dihapus');
+        } catch (\Exception $e) {
+            Log::error("Gagal menghapus produk dengan ID {$id}: {$e->getMessage()}");
+
+            return redirect()->back()->withInput()->with('error', 'Gagal menghapus produk.');
         }
-
-        $stock->delete();
-
-        return redirect()->route('stocks.index')->with('success', 'Produk berhasil dihapus');
     }
 }
