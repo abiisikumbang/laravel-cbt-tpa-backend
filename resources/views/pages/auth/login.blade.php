@@ -31,25 +31,24 @@
                         </div>
                     </div>
                     @error('password')
-
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" name="remember" class="custom-control-input" id="remember"
                             {{ old('remember') ? 'checked' : '' }}>
                         <label class="custom-control-label" for="remember">Remember Me</label>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-p  rimary btn-lg btn-block">Login</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
                 </div>
 
                 <div class="mt-3 text-muted text-center">
-                    Don't have an account? <a href="{{ route('register') }}">Register Now!</a>
+                    Belum punya akun? <a href="{{ route('register') }}"> Daftar Sekarang!</a>
                 </div>
             </form>
         </div>

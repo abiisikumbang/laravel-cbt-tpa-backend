@@ -23,6 +23,7 @@ class SellController extends Controller
      */
     public function store(StoreSellRequest $request)
     {
+        $this->authorize('create', SellTransaction::class);
         // Ambil data yang diinput dan divalidasi oleh StoreSellRequest
         $data = $request->validated();
 

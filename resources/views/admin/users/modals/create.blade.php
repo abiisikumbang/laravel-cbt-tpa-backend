@@ -120,6 +120,7 @@
 
                                                                 </div>
                                                             </div>
+                                                        </form>
                                                     </div>
                                                     {{-- js for password visibility --}}
                                                     <script>

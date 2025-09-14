@@ -61,7 +61,7 @@
                                 <div class="ml-auto">
                                     <form method="GET" action="{{ route('users.index') }}">
                                         <div class="input-group mr-2">
-                                            <input type="text" class="form-control" placeholder="Search" name="name"
+                                            <input type="text" class="form-control" placeholder="Pencarian" name="name"
                                                 value="{{ request('name') }}">
                                             <div class="input-group-append">
                                                 <button class="btn btn-primary" type="submit"><i

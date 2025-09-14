@@ -48,7 +48,7 @@
             </li>
         </ul>
         <ul class="sidebar-menu">
-            <li class="nav-item">
+            <li class="{{ Request::is('wastes') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('wastes.index') }}">
                     <i class="fas fa-recycle"></i>
                     <span>Tabel Sampah</span>
@@ -56,7 +56,7 @@
             </li>
         </ul>
         <ul class="sidebar-menu">
-            <li class="nav-item">
+            <li class="{{ Request::is('stocks') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('stocks.index') }}">
                     <i class="fas fa-boxes"></i>
                     <span>Tabel Reward</span>

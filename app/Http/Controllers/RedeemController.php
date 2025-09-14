@@ -120,8 +120,6 @@ class RedeemController extends Controller
     public function deleteTransaction($id)
     {
         $redeem = RewardRedeem::findOrFail($id);
-        $redeem->items()->delete();
-        $redeem->delete();
         $redeem->items()->delete(); // Hapus item terkait
         $redeem->delete(); // Hapus transaksi utama
         return back()->with('success', 'Transaksi berhasil dihapus.');

@@ -17,7 +17,7 @@
             <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="name">Name</label>
+                    <label for="name">Nama</label>
                     <input id="name" type="text"
                         class="form-control @error('name')
                         is-invalid
@@ -47,7 +47,7 @@
 
                 {{-- phone --}}
                 <div class="form-group">
-                    <label for="phone">Phone</label>
+                    <label for="phone">No.Telepon</label>
                     <input id="phone" type="text"
                         class="form-control @error('phone')
                         is-invalid
@@ -90,7 +90,7 @@
 
                 {{-- password confirmation --}}
                 <div class="form-group ">
-                    <label for="password2" class="d-block">Password Confirmation</label>
+                    <label for="password2" class="d-block">Konfirmasi Password</label>
                     <div class="input-group">
                         <input id="password2" type="password"
                             class="form-control @error('password_confirmation')

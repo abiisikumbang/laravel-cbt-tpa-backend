@@ -16,37 +16,34 @@ class UserController extends Controller
 {
 
     // Method untuk menampilkan halaman index users
-    public function index(Request $request)
-    {
-        $totalAdmin = User::where('roles', 'ADMIN')->count();
-        // $totalStaff = User::where('roles', 'STAFF')->count();
-        $totalUser = User::where('roles', 'USER')->count();
-        $usersTodayData = User::whereDate('created_at', now())->count();
+public function index(Request $request)
+{
+    $totalAdmin = User::where('roles', 'ADMIN')->count();
+    $totalUser = User::where('roles', 'USER')->count();
+    $counts = (object) [
+        'totalAdmin' => $totalAdmin,
+        'totalUser' => $totalUser,
+        'usersTodayData' => User::whereDate('created_at', now())->count(),
+    ];
 
-        // Menampilkan semua user
-        $users = User::query()
+    // Query user list dengan filter dinamis
+    $users = User::query()
+        ->when($request->input('name'), fn($query, $name) =>
+            $query->where('name', 'like', "%{$name}%")
+        )
+        ->when($request->input('role'), fn($query, $role) =>
+            $query->where('roles', $role)
+        )
+        ->orderByDesc('id')
+        ->simplePaginate(config('pagination.per_page', 5));
 
-            // Filter berdasarkan nama
-            ->when($request->input('name'), function ($query, $name) {
-                // Mencari nama yang sesuai dengan nama yang diinput
-                return $query->where('name', 'like', '%' . $name . '%');
-            })
-
-            // Filter berdasarkan role
-            ->when($request->input('role'), function ($query, $role) {
-                // Mencari role yang sesuai dengan role yang diinput
-                return $query->where('roles', $role);
-            })
-
-            // Menampilkan dalam order id DESC
-            ->orderBy('id', 'desc')
-
-            // Menampilkan dalam bentuk pagination
-            ->simplePaginate(5);
-
-        // Menampilkan view users.index dan memberikan data users
-        return view('admin.users.index', compact('users', 'totalAdmin', 'totalUser'));
-    }
+    return view('admin.users.index', [
+        'users' => $users,
+        'totalAdmin' => $counts->totalAdmin,
+        'totalUser' => $counts->totalUser,
+        'usersTodayData' => $counts->usersTodayData,
+    ]);
+}
 
     // Method untuk menampilkan halaman create user
     public function create()
